@@ -1,9 +1,23 @@
-import { Button } from "@/components/ui/button";
-
+"use client";
+import Hero from "@/components/Hero"
+import HoverSpring from "@/components/HoverSpring";
+import AnimatedLogoCloud from "@/components/AnimatedLogoCloud"
+import Works from "@/components/Works";
+import Testimonial from "@/components/Testimonial";
+import CTA from "@/components/CTA";
+import Footer from "@/components/Footer"
+import NavBar from "@/components/NavBar";
 export default function Home() {
   return (
-    <div>
-      <Button>click me</Button>
-    </div>
+    <main className="">
+      <NavBar />
+     <Hero />
+      <HoverSpring />
+      <AnimatedLogoCloud />
+      <Works />
+      <Testimonial direction="left" />
+      <CTA />
+      <Footer />
+    </main>
   );
 }
