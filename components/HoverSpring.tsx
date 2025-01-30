@@ -51,7 +51,7 @@ const HoverSpring = () => {
     <div className='container mt-24'>
       <h2 className='scroll-m-20 text-3xl text-center font-extrabold tracking-tight lg:text-4xl'>Features</h2>
       <div className="container grid w-full grid-cols-2 gap-x-10 md:grid-cols-3">
-        {ProjectsData.map((project) => {
+        {ProjectsData.map((project, index) => {
           return (
             <motion.div
               whileHover={{
@@ -61,7 +61,7 @@ const HoverSpring = () => {
                 type: 'spring',
                 bounce: 0.7,
               }}
-              key={project.id}
+              key={index}
               className="mt-5 text-left border-2 p-4 rounded-md"
             >
               <div className='flex items-center w-12 h-12 justify-center rounded-full bg-primary/10'> 

@@ -37,7 +37,7 @@ const NavBar = () => {
             </div>): session?.user ? (<UserAvatar />) : ( */}
 
                 <div className="flex gap-8 md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-    <Link className='text-primary underline-offset-4 hover:underline inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50' href="/auth/signin" >Login</Link>
+    <Link className='text-primary underline-offset-4 hover:underline inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50' href="/auth/login" >Login</Link>
     <Link href="/auth/signup" className='h-10 px-4 py-2 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-green-500 text-white hover:bg-green-600'>Register</Link>
     </div>
     </div>
