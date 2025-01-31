@@ -6,13 +6,18 @@ import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from 'next/link';
+import { useAuthStore } from "@/store/use-auth";
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button";
 // import { getSession } from "next-auth/react";
 import { Loader2 } from "lucide-react";
+import axios from "axios";
+
 const Page = () => {
     const router = useRouter();
-    const [loading, setLoading] = useState(false)
+    const {login} = useAuthStore()
+    const [isLoading, setIsLoading] = useState(false)
+    const [error, setError] = useState("")
     const [data, setData] = useState({
         email: "",
         password: "",
@@ -27,54 +32,45 @@ const Page = () => {
 
       const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setLoading(true)
+        setIsLoading(true)
 
-        // const result = await signIn('credentials', {
-        //     redirect: false,
-        //     email,
-        //     password,
-        // });
+        if(!email || !password) {
+            setIsLoading(false)
+            setError("All fields are required")
+            return;
+        }
 
-        // if(result?.ok) {
-            
-        // // Get the session to retrieve the user ID
-        // const session = await getSession();
-        // const userId = session?.user?.id;
-
-        // if (!userId) {
-        //     alert("Failed to retrieve user ID");
-        //     setLoading(false);
-        //     return;
-        // }
-
-        //     const hasWorkspace = await fetch(`/api/check-workspace?id=${userId}`);
-        //     const profileData = await hasWorkspace.json();
-
-        //     if (profileData.hasWorkspace) {
-        //         const lastWorkspace = profileData.lastWorkspace;
-        //         console.log(lastWorkspace.id, "from login page");
-                
-        //         setData({
-        //             email: "",
-        //             password: "",
-        //         });
-        //         setLoading(false)
-        //         router.push(`/user/${userId}/workspace/${lastWorkspace.workspaceName}/${lastWorkspace.id}/dashboard`);
-        //     } else {
-        //        setData({
-        //             email: "",
-        //             password: "",
-        //         });
-        //         router.push("/createworkspace")
-        //     }
-        // } else {
-        //     alert("Incorrect email or password")
-        //     setLoading(false)
-        // }
+        try {
+            await login(email, password)
+            alert("successful")
+            // setIsDialogOpen(true);
+            // setAlertTitle('Registration Successful');
+            // setAlertMessage('You can now log in with your credentials.');
+            setData({
+                email: "",
+                password: ""
+            })
+          } catch (error: unknown) {
+            if (axios.isAxiosError(error)) {
+              // Handle Axios error and safely extract response message
+              console.error("Axios error:", error.response?.data);
+              setError(error.response?.data?.responseMessage || "An error occurred while signing up.");
+            } else if (error instanceof Error) {
+              // Handle generic JavaScript errors
+              console.error("Error:", error.message);
+              setError(error.message);
+            } else {
+              // Handle unexpected error types
+              console.error("Unexpected error:", error);
+              setError("An unexpected error occurred.");
+            }
+          } finally {
+            setIsLoading(false)
+          }
       }
 
       const handleGoogleSignIn = async () => {
-        setLoading(true);
+        setIsLoading(true);
     
         // await signIn("google", { callbackUrl: "/post-signin-redirect" }); // Redirects to a custom page after authentication
     };
@@ -151,7 +147,7 @@ const Page = () => {
         </div>
         {/* {error && <p className="text-red-500 text-sm">{error}</p>} */}
         <div className="mt-6">
-            {loading? <Button className="w-full px-6 py-3 text-sm font-medium tracking-wide capitalize transition-colors duration-300 transform rounded-lg focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-50 bg-green-500 text-white hover:bg-green-600" disabled>
+            {isLoading? <Button className="w-full px-6 py-3 text-sm font-medium tracking-wide capitalize transition-colors duration-300 transform rounded-lg focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-50 bg-green-500 text-white hover:bg-green-600" disabled>
       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
       Please wait
     </Button> : <Button type="submit" className="w-full px-6 py-3 text-sm font-medium tracking-wide capitalize transition-colors duration-300 transform rounded-lg focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-50 bg-green-500 text-white hover:bg-green-600"> Sign In </Button>}

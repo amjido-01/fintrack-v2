@@ -9,16 +9,18 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useAuthStore } from '@/store/use-auth';
 // import { signIn } from 'next-auth/react';
 import Popover from '@/components/Popover';
 
 const Page = () => {
     const router = useRouter();
-    const [loading, setLoading] = useState(false);
+    const {register} = useAuthStore()
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [alertTitle, setAlertTitle] = useState('');
     const [alertMessage, setAlertMessage] = useState('')
-    const [error, SetError] = useState('')
+    const [error, setError] = useState('')
+    const [isLoading, setIsLoading] = useState(false)
 
     const [data, setData] = useState({
         email: "",
@@ -35,49 +37,57 @@ const Page = () => {
 
       const registerUser = async (e: any) => {
         e.preventDefault();
-        setLoading(true)
+        setIsLoading(true)
         
 
         if(!email || !password || !name || !userName) {
-            setLoading(false)
-            SetError("All fields are required")
+            setIsLoading(false)
+            setError("All fields are required")
             return;
         }
 
-        axios.post("/api/auth/register", {
-            email,
-            password,
-            name,
-            userName,
-        }).then(() => {
-            setIsDialogOpen(true);
-            setAlertTitle('Registration Successful');
-            setAlertMessage('You can now log in with your credentials.');
+        try {
+            await register(name, email, password, userName)
+            alert("successful")
+            // setIsDialogOpen(true);
+            // setAlertTitle('Registration Successful');
+            // setAlertMessage('You can now log in with your credentials.');
             setData({
                 email: "",
                 password: "",
                 name: "",
                 userName: "",
             })
-        }).catch(() => {
-            setAlertTitle('Error');
-            setAlertMessage("An error occurred while submitting the form. Please try again.");
-            setIsDialogOpen(true);
-            setLoading(false)
-        })
+          } catch (error: unknown) {
+            if (axios.isAxiosError(error)) {
+              // Handle Axios error and safely extract response message
+              console.error("Axios error:", error.response?.data);
+              setError(error.response?.data?.responseMessage || "An error occurred while signing up.");
+            } else if (error instanceof Error) {
+              // Handle generic JavaScript errors
+              console.error("Error:", error.message);
+              setError(error.message);
+            } else {
+              // Handle unexpected error types
+              console.error("Unexpected error:", error);
+              setError("An unexpected error occurred.");
+            }
+          } finally {
+            setIsLoading(false)
+          }
 
       }
 
       function handleCloseDialog() {
         setIsDialogOpen(false);
-        setLoading(false)
+        setIsLoading(false)
         if (alertTitle === 'Registration Successful') {
         router.push("/auth/signin")
         }
       }
 
       const handleGoogleSignIn = async () => {
-        setLoading(true);
+        setIsLoading(true);
     
         // await signIn("google", { callbackUrl: "/post-signin-redirect" });
     };
@@ -182,7 +192,7 @@ const Page = () => {
         </div>
         {/* {error && <p className="text-red-500 text-sm">{error}</p>} */}
         <div className="mt-6">
-            {loading ? <Button className="w-full px-6 py-3 text-sm font-medium tracking-wide capitalize transition-colors duration-300 transform rounded-lg focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-50 bg-green-500 text-white hover:bg-green-600" disabled>
+            {isLoading ? <Button className="w-full px-6 py-3 text-sm font-medium tracking-wide capitalize transition-colors duration-300 transform rounded-lg focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-50 bg-green-500 text-white hover:bg-green-600" disabled>
       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
       Please wait
     </Button> : <Button type="submit" className="w-full px-6 py-3 text-sm font-medium tracking-wide capitalize transition-colors duration-300 transform rounded-lg focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-50 bg-green-500 text-white hover:bg-green-600"> Sign Up </Button>}
@@ -192,7 +202,7 @@ const Page = () => {
         <div className="flex items-center justify-between mt-4">
             <span className="w-1/5 border-b dark:border-gray-600 md:w-1/4"></span>
 
-            <Link href="/auth/signin" className="text-xs text-gray-500 uppercase dark:text-gray-400 hover:underline">or sign in</Link>
+            <Link href="/auth/login" className="text-xs text-gray-500 uppercase dark:text-gray-400 hover:underline">or sign in</Link>
 
             <span className="w-1/5 border-b dark:border-gray-600 md:w-1/4"></span>
         </div>
