@@ -18,7 +18,7 @@ interface AuthState {
   accessToken: string | null;
   loading: boolean;
   isLoggedIn: () => boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<string | null>;
   register: (email: string, password: string, name: string, userName: string) => Promise<void>
   logout: () => Promise<void>;
   checkAuth: () => Promise<boolean>;
@@ -59,10 +59,11 @@ export const useAuthStore = create(
           const { accessToken, refreshToken, responseBody } = response.data;
           console.log(response.data, "refresh token......");
 
-          set({ accessToken, user: responseBody });
+          set({ accessToken, user: responseBody});
           api.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
           console.log(accessToken, ".....")
           
+          return responseBody.id;
         } catch (error) {
           console.error("Login failed:", error);
           throw error;

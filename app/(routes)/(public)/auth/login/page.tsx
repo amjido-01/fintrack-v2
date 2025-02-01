@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
 import { useState } from "react";
-// import { signIn } from 'next-auth/react';
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,9 +8,9 @@ import Link from 'next/link';
 import { useAuthStore } from "@/store/use-auth";
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button";
-// import { getSession } from "next-auth/react";
 import { Loader2 } from "lucide-react";
 import axios from "axios";
+import api from "@/app/api/axiosConfig";
 
 const Page = () => {
     const router = useRouter();
@@ -41,8 +40,37 @@ const Page = () => {
         }
 
         try {
-            await login(email, password)
-            alert("successful")
+            const userId = await login(email, password)
+            
+            console.log(userId, "id from login")
+            if (!userId) {
+              alert("Failed to retrieve user ID");
+              setIsLoading(false);
+              return;
+          }
+
+          const hasWorkSpace = api.post(`/check-workspace/${userId}`)
+          const profileData = (await hasWorkSpace).data;
+          console.log(profileData, "from login")
+
+          if (profileData.hasWorkspace) {
+            const lastWorkspace = profileData.lastWorkspace;
+            console.log(lastWorkspace.id, "from login page");
+            
+            setData({
+                email: "",
+                password: "",
+            });
+            setIsLoading(false)
+            router.push(`/user/${userId}/workspace/${lastWorkspace.workspaceName}/${lastWorkspace.id}/dashboard`);
+        } else {
+           setData({
+                email: "",
+                password: "",
+            });
+            router.push("/createworkspace")
+        }
+            // alert("successful")
             // setIsDialogOpen(true);
             // setAlertTitle('Registration Successful');
             // setAlertMessage('You can now log in with your credentials.');
