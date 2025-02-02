@@ -3,9 +3,9 @@ import React from 'react';
 import Link from "next/link";
 // import { useSession } from "next-auth/react";
 import {ModeToggle} from "@/components/ui/ModeToggle";
-import { usePathname } from 'next/navigation';
-import UserAvatar from './ui/UserAvatar';
-import { Loader2 } from "lucide-react"
+// import { usePathname } from 'next/navigation';
+// import UserAvatar from './ui/UserAvatar';
+// import { Loader2 } from "lucide-react"
 
 // const NavLinks = [
 // 	{ id: 1, name: 'Dashboard', path: '/dashboard' },
@@ -15,8 +15,8 @@ import { Loader2 } from "lucide-react"
 const NavBar = () => {
 //   const { data: session, status } = useSession();
 //   const loading = status === "loading";
-  const pathname = usePathname();
-  const isActive = (path: string) => path === pathname;
+  // const pathname = usePathname();
+  // const isActive = (path: string) => path === pathname;
   return (
     <nav className="container w-full z-20 start-0">
   <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">

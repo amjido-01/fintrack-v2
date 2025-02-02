@@ -1,6 +1,5 @@
 "use client"
 import { motion } from 'framer-motion'
-import Image from 'next/image'
 import { BookOpen, ShieldCheck } from 'lucide-react'
 import { LineChart, FolderKanban, Repeat2 } from 'lucide-react'
 

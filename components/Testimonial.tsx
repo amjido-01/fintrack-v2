@@ -75,7 +75,8 @@ type TestimonialProps = {
     direction: "left" | "right" | "up" | "down";
     // logos: string[];
 }
-const Testimonial: React.FC<TestimonialProps> = ({direction}) => {
+
+const Testimonial: React.FC<TestimonialProps> = () => {
   return (
     <div className='mt-20 overflow-hidden relative flex flex-col gap-4'>
         <div>

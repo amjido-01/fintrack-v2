@@ -35,7 +35,7 @@ const Page = () => {
         setData({ ...data, [e.target.name]: e.target.value });
       };
 
-      const registerUser = async (e: any) => {
+      const registerUser = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsLoading(true)
         
@@ -48,10 +48,9 @@ const Page = () => {
 
         try {
             await register(name, email, password, userName)
-            alert("successful")
-            // setIsDialogOpen(true);
-            // setAlertTitle('Registration Successful');
-            // setAlertMessage('You can now log in with your credentials.');
+            setIsDialogOpen(true);
+            setAlertTitle('Registration Successful');
+            setAlertMessage('You can now log in with your credentials.');
             setData({
                 email: "",
                 password: "",
@@ -190,7 +189,7 @@ const Page = () => {
             placeholder="•••••••••"
             className='block w-full px-4 py-2' />
         </div>
-        {/* {error && <p className="text-red-500 text-sm">{error}</p>} */}
+        {error && <p className="text-red-500 text-sm">{error}</p>}
         <div className="mt-6">
             {isLoading ? <Button className="w-full px-6 py-3 text-sm font-medium tracking-wide capitalize transition-colors duration-300 transform rounded-lg focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-50 bg-green-500 text-white hover:bg-green-600" disabled>
       <Loader2 className="mr-2 h-4 w-4 animate-spin" />

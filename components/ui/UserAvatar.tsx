@@ -1,7 +1,7 @@
 "use client"
 import React from 'react';
 // import { signOut } from 'next-auth/react';
-import { LogOut } from 'lucide-react';
+// import { LogOut } from 'lucide-react';
 // import { useSession } from 'next-auth/react';
 import { ChevronDown } from 'lucide-react';
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar"
@@ -13,7 +13,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu"
-  import { Button } from './button'
+  // import { Button } from './button'
 const UserAvatar = () => {
     // const { data: session} = useSession()
   return (
