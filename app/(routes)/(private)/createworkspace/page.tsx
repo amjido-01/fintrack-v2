@@ -86,9 +86,7 @@ const Page = () => {
           
           // Check if the request was successful
           if (response.status === 201) {
-            console.log(response.data, "from test")
             const workspaceId = response?.data?.responseBody.id
-            console.log(workspaceId)
             const workspaceNameValue = response.data.responseBody.workspaceName;
             const userIdValue = response.data.responseBody.createdById
             setWorkspaceIdValue(workspaceId);
