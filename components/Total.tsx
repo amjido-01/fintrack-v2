@@ -10,7 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useState, useEffect, useMemo } from "react";
+import { useState,  useMemo } from "react";
 import {
   ChartConfig,
   ChartContainer,
@@ -73,7 +73,7 @@ const chartData = useMemo(() => {
   const timeFrameInt = timeframe === "weekly" ? 7 : timeframe === "monthly" ? 28 : 365;
   const pastDate = new Date(currentDate.getTime() - timeFrameInt * 24 * 60 * 60 * 1000);
 
-  let updatedChartData = getEmptyChartData(timeframe);
+  const updatedChartData = getEmptyChartData(timeframe);
 
   const updateData = (dataList: (Expense | Income)[], dataKey: 'expenses' | 'income') => {
     dataList

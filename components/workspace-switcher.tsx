@@ -23,12 +23,6 @@ import {
 } from "@/components/ui/command"
 import {
   Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog"
 import {
   Popover,
@@ -64,7 +58,6 @@ interface WorkspaceSwitcherProps extends PopoverTriggerProps {
 export default function WorkspaceSwitcher({ className, workspaces }: WorkspaceSwitcherProps) {
   const [open, setOpen] = React.useState(false)
   const [showNewWorkspaceDialog, setShowNewWorkspaceDialog] = React.useState(false)
-  const [id, setId] = React.useState<string>("")
   
   const router = useRouter();
     const {workspaceId}  = useParams()

@@ -6,7 +6,6 @@ import { Label } from './ui/label';
 import { Textarea } from './ui/textarea';
 import { Loader2 } from "lucide-react";
 import {PlusCircle} from "lucide-react"
-import axios from 'axios';
 import Popover from './Popover';
 
 import {
@@ -22,6 +21,7 @@ import {
     SelectTrigger,
     SelectValue, } from './ui/select';
 import { useQueryClient } from '@tanstack/react-query';
+import api from '@/app/api/axiosConfig';
     interface Expense {
       userId: string;
       workspaceId: string | string[];
@@ -37,7 +37,7 @@ const ExpensesDialog: React.FC<Expense> = ({userId, workspaceId}) => {
     const [date, setDate] = useState('')
     const [category, setCategory] = useState(categories[0])
     const [customCategory, setCustomCategory] = useState('')
-    const [amount, setAmount] = useState('')
+    const [amount, setAmount] = useState<number>(0)
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
     const [note, setNote] = useState('')
@@ -51,7 +51,7 @@ const ExpensesDialog: React.FC<Expense> = ({userId, workspaceId}) => {
         setLoading(true)
         setError('')
 
-        const expenseCategory = category === "Other" ? customCategory : category;
+        // const expenseCategory = category === "Other" ? customCategory : category;
        
         
         if (!expenseName || !date || !amount || !category) {
@@ -61,7 +61,7 @@ const ExpensesDialog: React.FC<Expense> = ({userId, workspaceId}) => {
     }
 
     try {
-      const response = await axios.post("/api/expenses", {
+      const response = await api.post("/create-expense", {
         expenseName,
         date,
         amount,
@@ -72,13 +72,13 @@ const ExpensesDialog: React.FC<Expense> = ({userId, workspaceId}) => {
         userId
       })
 
-      if (response.data && !response.data.error) {
+      if (response.status === 200) {
         setAlertTitle('Expense Added Successfully');
         setAlertMessage('Your expense has been created successfully.');
         setIsDialogOpen(true)
         setExpenseName('');
         setDate('');
-        setAmount('');
+        setAmount(0);
         setCategory(categories[0]);
         setNote('');
         queryClient.invalidateQueries({
@@ -91,6 +91,7 @@ const ExpensesDialog: React.FC<Expense> = ({userId, workspaceId}) => {
         setIsDialogOpen(true)
       }
     } catch (error) {
+      console.log(error)
       setAlertTitle('Error');
       setAlertMessage('An error occurred while submitting the form.');
       setIsDialogOpen(true);
@@ -149,7 +150,7 @@ const ExpensesDialog: React.FC<Expense> = ({userId, workspaceId}) => {
         type="number"
         name='amount'
         value={amount}
-        onChange={(e) => setAmount(e.target.value)}
+        onChange={(e) => setAmount(Number(e.target.value))}
         placeholder="Enter amount"
         className="mt-1"
       />

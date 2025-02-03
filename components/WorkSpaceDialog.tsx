@@ -5,10 +5,8 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { z } from 'zod';
 import { Textarea } from "@/components/ui/textarea"
-// import { useSession } from "next-auth/react";
 import { useState } from 'react'
 import { useRouter } from 'next/navigation';
-import axios from 'axios';
 import Popover from './Popover';
 import {
   Dialog,
@@ -18,7 +16,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useToast } from "@/hooks/use-toast"
+// import { useToast } from "@/hooks/use-toast"
 import {  Select,
   SelectContent,
   SelectItem,
@@ -42,7 +40,7 @@ const WorkSpaceDialog = () => {
   // connst {setWorkspaces} = useWorkspaceStore();
   const  queryClient  = useQueryClient();
   const router = useRouter();
-  const { toast } = useToast()
+  // const { toast } = useToast()
 //   const { data: session, status } = useSession();
 
    const [loading, setLoading] = useState(false);
@@ -54,7 +52,6 @@ const WorkSpaceDialog = () => {
    const [isDialogOpen, setIsDialogOpen] = useState(false);
    const [alertTitle, setAlertTitle] = useState("");
    const [alertMessage, setAlertMessage] = useState("");
-   const [newWorkspaceId, setNewWorkspaceId] = useState('');
    const [workspaceNameValue, setWorkspaceNameValue] = useState('');
    const [workspaceIdValue, setWorkspaceIdValue] = useState('');
    const [userId, setUserId] = useState<string>("")
@@ -107,6 +104,7 @@ const WorkSpaceDialog = () => {
         setErrors({ workspaceName: "Workspace creation failed" });
       }
     } catch (err) {
+      console.log(err)
       setLoading(false);
       setIsDialogOpen(true);  
       setAlertTitle("Error");

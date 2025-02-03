@@ -28,13 +28,13 @@ import { CalendarDateRangePicker } from "@/components/date-range-picker"
 import { MainNav } from "@/components/main-nav"
 import { RecentExpenses } from "@/components/RecentExpenses"
 import UserAvatar from '@/components/ui/UserAvatar';
-import { Search } from "@/components/search"
+// import { Search } from "@/components/search"
 import {ModeToggle} from "@/components/ui/ModeToggle";
 import WorkspaceSwitcher from "@/components/workspace-switcher"
 import IncomeDialog from '@/components/IncomeDialog';
 import {BadgeDollarSign, Banknote } from "lucide-react"
-import { Landmark, ArrowUpRight } from 'lucide-react';
-import { Skeleton } from '@/components/ui/skeleton';
+import { ArrowUpRight } from 'lucide-react';
+// import { Skeleton } from '@/components/ui/skeleton';
 import api from '@/app/api/axiosConfig';
 
 
@@ -79,17 +79,17 @@ interface Workspace {
 
 
 const Page = () => {
-    const [workspaceExpense, setWorkspaceExpense] = useState([]);
+    // const [workspaceExpense, setWorkspaceExpense] = useState([]);
     const [totalExpenses, setTotalExpenses] = useState(0);
     const [totalIncome, setTotalIncome] = useState(0);
     const [balance, setBalance] = useState<string | number>(0);
     const [averageDailyExpense, setAverageDailyExpense] = useState(0);
     const [topCategory, setTopCategory] = useState("");
     const [topIncome, setTopIncome] = useState("");
-    const [averageMonthlyIncome, setAverageMonthlyIncome] = useState(0)
-    const [averageMonthlyExpense, setAverageMonthlyExpense] = useState()
+    // const [averageMonthlyIncome, setAverageMonthlyIncome] = useState(0)
+    // const [averageMonthlyExpense, setAverageMonthlyExpense] = useState()
 
-    let {workspaceId, userId}  = useParams()
+    const {workspaceId, userId}  = useParams()
     console.log(typeof workspaceId, "workspace id")
     
     const getWorkspaces = async () => {
@@ -102,10 +102,12 @@ const Page = () => {
       return res.data.responseBody;
     }
   
-    const {data: workspaces, isLoading, error, refetch} = useQuery({queryKey: ['workspaces', workspaceId, {type: "done"}], queryFn: getWorkspaces});
+    const {data: workspaces, isLoading, error} = useQuery({queryKey: ['workspaces', workspaceId, {type: "done"}], queryFn: getWorkspaces});
 
 
-    const {data: currentWorkSpace, isLoading:currentLoading, error:currentError, refetch:refetchCurrentWorkspace} = useQuery(
+    const {data: currentWorkSpace, isLoading:currentLoading, error:currentError, // refetch:refetchCurrentWorkspace
+
+    } = useQuery(
       {queryKey: ['workspace', workspaceId, {type: "done"}], queryFn: getWorkspace});
       
       console.log(currentWorkSpace, "curr")
@@ -168,24 +170,24 @@ const Page = () => {
           // subtract the total expenses from the total income
           
           // total expenses
-          const total = currentWorkSpace?.expenses.filter((item: any) => !item.isDeleted).reduce((acc: number, expense: Expense) => acc + expense.amount, 0);
+          const total = currentWorkSpace?.expenses.filter((item: Expense) => !item.isDeleted).reduce((acc: number, expense: Expense) => acc + expense.amount, 0);
           setTotalExpenses(total.toFixed(2));
 
           // total income
-          const totalIncome = currentWorkSpace?.income.filter((item: any) => !item.isDeleted).reduce((acc: number, income: Income) => acc + income.amount, 0);
+          const totalIncome = currentWorkSpace?.income.filter((item: Income) => !item.isDeleted).reduce((acc: number, income: Income) => acc + income.amount, 0);
           setTotalIncome(totalIncome.toFixed(2));
 
           // remaining income
-          let balance = (totalIncome - total).toFixed(2);
+          const balance = (totalIncome - total).toFixed(2);
           setBalance(balance);
 
           
-          const averageDailyExpense = currentWorkSpace?.expenses.filter((item: any) => !item.isDeleted).reduce((acc: number, expense: Expense) => acc + expense.amount, 0) / currentWorkSpace?.expenses.length;
+          const averageDailyExpense = currentWorkSpace?.expenses.filter((item: Expense) => !item.isDeleted).reduce((acc: number, expense: Expense) => acc + expense.amount, 0) / currentWorkSpace?.expenses.length;
           const rounded = Math.round(averageDailyExpense * 100) / 100;
           setAverageDailyExpense(rounded);
 
           // get the monthly average
-          const averageMonthlyExpense = currentWorkSpace?.expenses.filter((item: any) => !item.isDeleted).reduce((acc: number, expense: Expense) => acc + expense.amount, 0) / 30;
+          // const averageMonthlyExpense = currentWorkSpace?.expenses.filter((item: any) => !item.isDeleted).reduce((acc: number, expense: Expense) => acc + expense.amount, 0) / 30;
           // setAverageMonthlyExpense(averageMonthlyExpense);
           
           // Call the function to calculate the top category
@@ -197,18 +199,18 @@ const Page = () => {
       }, [currentWorkSpace])
 
       // get the total number of expenses
-      const expenseLenght = currentWorkSpace?.expenses.filter((item: any) => !item.isDeleted).length;
+      const expenseLenght = currentWorkSpace?.expenses.filter((item: Expense) => !item.isDeleted).length;
 
     
-    if (isLoading) return  <div className="flex  text-primary justify-center items-center h-screen">
+    if (isLoading || currentLoading) return  <div className="flex  text-primary justify-center items-center h-screen">
       <div className="flex flex-col items-center">
         <Loader2 className="h-6 w-6 animate-spin mb-2" />
         <p>Getting your workspace ready, please wait...</p>
       </div>
   </div>
-    if (error) return <div className="flex justify-center items-center h-screen">
+    if (error || currentError) return <div className="flex justify-center items-center h-screen">
     <div className="flex flex-col items-center">
-      <p>{error.message}</p>
+      <p>{error?.message}</p>
     </div>
 </div>;
     if (!userId) return <div className="flex justify-center items-center h-screen">

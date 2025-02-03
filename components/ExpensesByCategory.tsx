@@ -116,12 +116,15 @@ export function ExpensesByCategory({ expenses }: { expenses: Expense[] }) {
 
     // Prepare chart data
     const updatedChartData = Object.entries(categoryTotals)
-      .filter(([_, amount]) => amount > 0)
-      .map(([category, amount]) => ({
-        category,
-        amount,
-        fill: chartConfig[category as Category].color,
-      }));
+    .filter(([_, amount]) => amount > 0) // Use _ to indicate the first value is ignored
+    .map(([category, amount]) => ({
+      category,
+      amount,
+      fill: chartConfig[category as Category].color,
+    }));
+  
+
+
 
     setChartData((oldChartData) => ({ ...oldChartData, [timeframe]: updatedChartData }));
   }, [filteredExpenses, timeframe]);

@@ -19,7 +19,7 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Textarea } from './ui/textarea';
-import axios from 'axios';
+import api from '@/app/api/axiosConfig';
 import {  useQueryClient } from '@tanstack/react-query'
 
 
@@ -36,7 +36,7 @@ const IncomeDialog: React.FC<Expense> = ({userId, workspaceId,
 }) => {
     const [open, setOpen] = useState(false)
     const [incomeSource, setIncomeSource] = useState('')
-    const [amount, setAmount] = useState<number>()
+    const [amount, setAmount] = useState<number>(0)
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
     const [date, setDate] = useState('')
@@ -54,7 +54,7 @@ const IncomeDialog: React.FC<Expense> = ({userId, workspaceId,
       setLoading(true)
       setError('')
 
-      const incomeCategory = category === "Other" ? customCategory: category
+      // const incomeCategory = category === "Other" ? customCategory: category
       
       if (!incomeSource || !date || !amount || !category || !description) {
         setError('All fields are required');
@@ -63,7 +63,7 @@ const IncomeDialog: React.FC<Expense> = ({userId, workspaceId,
       }
 
       try {
-        const response = await axios.post("/api/incomes", {
+        const response = await api.post("/create-income", {
           incomeSource,
           date,
           description,
@@ -73,7 +73,8 @@ const IncomeDialog: React.FC<Expense> = ({userId, workspaceId,
           workspaceId,
           userId
         })
-        if (response.data && !response.data.error) {
+        if (response.status === 200) {
+            console.log(response.data.responseBody, "from income")
           setAlertTitle('Income Added Successfully');
           setAlertMessage('Your new income has been added successfully.');
           setIsDialogOpen(true)
@@ -93,6 +94,7 @@ const IncomeDialog: React.FC<Expense> = ({userId, workspaceId,
          setIsDialogOpen(true)
         }
       } catch (error) {
+        console.log(error)
         setAlertTitle('Error');
         setAlertMessage('An error occurred while submitting the form');
         setIsDialogOpen(true);
