@@ -93,7 +93,7 @@ const Page = () => {
     
     const getWorkspaces = async () => {
       const res = await api.get(`/workspace`);
-      return res.data.responseBody;
+      return res.data?.responseBody;
     }
 
 
@@ -104,14 +104,14 @@ const Page = () => {
   
     const {data: workspaces, isLoading, error} = useQuery({queryKey: ['workspaces', workspaceId, {type: "done"}],queryFn: async () => {
       const data = await getWorkspaces();
-      return data?.hasWorkSpace ?? null; // Extract only workspaces
+      return data?.hasWorkSpace; // Extract only workspaces
   }});
 
   const { data: user, isLoading: userLoading, error: userError } = useQuery({
     queryKey: ['user'],
     queryFn: async () => {
         const data = await getWorkspaces();
-        return data?.user ?? null; // Extract only user data
+        return data?.user; // Extract only user data
     }
 });
 
