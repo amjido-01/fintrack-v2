@@ -39,7 +39,7 @@ export const useAuthStore = create(
 
       register: async (name: string, email: string, password: string, userName: string) => {
         try {
-          const response = await api.post('https://fintrack-v2-api.onrender.com/api/v1/auth/register', { name, userName, email, password })
+          const response = await api.post('/auth/register', { name, userName, email, password })
           console.log(response, "from register")
           const { user, accessToken, refreshToken } = response.data.responseBody
           set({ user, accessToken, refreshToken })

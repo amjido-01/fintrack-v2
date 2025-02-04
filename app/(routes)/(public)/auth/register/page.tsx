@@ -81,7 +81,7 @@ const Page = () => {
         setIsDialogOpen(false);
         setIsLoading(false)
         if (alertTitle === 'Registration Successful') {
-        router.push("/auth/signin")
+        router.push("/auth/login")
         }
       }
 
@@ -189,7 +189,6 @@ const Page = () => {
             placeholder="•••••••••"
             className='block w-full px-4 py-2' />
         </div>
-        {error && <p className="text-red-500 text-sm">{error}</p>}
         <div className="mt-6">
             {isLoading ? <Button className="w-full px-6 py-3 text-sm font-medium tracking-wide capitalize transition-colors duration-300 transform rounded-lg focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-50 bg-green-500 text-white hover:bg-green-600" disabled>
       <Loader2 className="mr-2 h-4 w-4 animate-spin" />

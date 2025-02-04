@@ -30,7 +30,7 @@ api.interceptors.response.use(
         }
       } else {
         // User is not logged in, so don't attempt to refresh
-        throw error;
+        throw error;  
       }
     }
     return Promise.reject(error);
