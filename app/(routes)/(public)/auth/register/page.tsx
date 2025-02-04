@@ -135,7 +135,7 @@ const Page = () => {
         <form onSubmit={registerUser}>
         <div className="mt-4 flex flex-col md:flex-row md:justify-between">
             {error && <p className="text-red-500 text-sm">{error}</p>}
-            <div className='w-[48%]'>
+            <div className='md:w-[48%]'>
             <Label className='block mb-2 text-sm font-medium' htmlFor="name">Name</Label>
             <Input 
              type="text"
@@ -147,7 +147,7 @@ const Page = () => {
              required
             className='block w-full px-4 py-2' />
             </div>
-            <div className='w-[48%]'>
+            <div className='md:w-[48%]'>
             <Label className='block mb-2 text-sm font-medium' htmlFor="userName">Username</Label>
             <Input 
              type="text"

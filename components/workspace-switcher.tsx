@@ -58,11 +58,12 @@ interface WorkspaceSwitcherProps extends PopoverTriggerProps {
 export default function WorkspaceSwitcher({ className, workspaces }: WorkspaceSwitcherProps) {
   const [open, setOpen] = React.useState(false)
   const [showNewWorkspaceDialog, setShowNewWorkspaceDialog] = React.useState(false)
+
   
   const router = useRouter();
-    const {workspaceId}  = useParams()
+  const {workspaceId}  = useParams()
 
-const workspace = workspaces.filter(workspace => workspace.id == workspaceId)
+const workspace = workspaces?.filter(workspace => workspace.id == workspaceId)
 
 const [selectedWorkspace, setSelectedWorkspace] = React.useState<Workspace>(workspace[0]);
 

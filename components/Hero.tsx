@@ -14,7 +14,7 @@ const Hero = () => {
                 <p className="mt-4 text-sm text-gray-500 lg:text-base">Easily manage expenses, stay on budget, and achieve your financial goals with our user-friendly app.</p>
 
                 <div className="flex gap-5 flex-col mt-6 space-y-3 lg:space-y-0 lg:flex-row">
-                   <Link href="/auth/signup" className="bg-gray-900 border-2 border-green-500 text-white hover:bg-gray-700  h-10 px-4 py-2 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">Get Started</Link>
+                   <Link href="/auth/register" className="bg-gray-900 border-2 border-green-500 text-white hover:bg-gray-700  h-10 px-4 py-2 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">Get Started</Link>
                     <Button className="bg-green-500 text-white hover:bg-green-700">Learn More</Button>
                 </div>
             </div>

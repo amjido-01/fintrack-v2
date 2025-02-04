@@ -42,7 +42,6 @@ const Page = () => {
         try {
             const userId = await login(email, password)
             
-            console.log(userId, "id from login")
             if (!userId) {
               alert("Failed to retrieve user ID");
               setIsLoading(false);
@@ -51,11 +50,9 @@ const Page = () => {
 
           const hasWorkSpace = api.post(`/check-workspace/${userId}`)
           const profileData = (await hasWorkSpace).data;
-          console.log(profileData, "from login")
 
           if (profileData.hasWorkspace) {
             const lastWorkspace = profileData.lastWorkspace;
-            console.log(lastWorkspace.id, "from login page");
             
             setData({
                 email: "",
@@ -145,6 +142,7 @@ const Page = () => {
 
         <form onSubmit={handleSubmit}>
         <div className="mt-4">
+        {error && <p className="text-red-500 mb-4 text-sm">{error}</p>}
             <Label className='block mb-2 text-sm font-medium' htmlFor="email">Email Address</Label>
             <Input 
              type="email"
@@ -173,7 +171,6 @@ const Page = () => {
             placeholder="•••••••••"
             className='block w-full px-4 py-2' />
         </div>
-        {error && <p className="text-red-500 text-sm">{error}</p>}
         <div className="mt-6">
             {isLoading? <Button className="w-full px-6 py-3 text-sm font-medium tracking-wide capitalize transition-colors duration-300 transform rounded-lg focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-50 bg-green-500 text-white hover:bg-green-600" disabled>
       <Loader2 className="mr-2 h-4 w-4 animate-spin" />

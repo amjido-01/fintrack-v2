@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { useState } from 'react'
 import { useRouter } from 'next/navigation';
 import Popover from './Popover';
+import { Loader2 } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -90,7 +91,6 @@ const WorkSpaceDialog = () => {
       setLoading(false);
     
       if (response.status === 201) {
-        console.log(response.data.responseBody, "from dashboard")
         setWorkspaceIdValue(response.data.responseBody.id)
         setWorkspaceNameValue(response.data.responseBody.workspaceName)
         setUserId(response.data.responseBody.createdById)
@@ -178,9 +178,12 @@ const WorkSpaceDialog = () => {
       <Textarea value={description} onChange={(e) => setDescription(e.target.value)} className='mt-1' name='description' placeholder="Add a description for your workspace." id="description" />
       {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description}</p>}
     </div>
-      <Button  type="submit" className='w-full inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-green-500 text-white hover:bg-green-600'>
-      {loading ? "Creating..." : "Create Workspace"}
-      </Button>
+    {loading ? <Button className="w-full px-6 py-3 text-sm font-medium tracking-wide capitalize transition-colors duration-300 transform rounded-lg focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-50 bg-green-500 text-white hover:bg-green-600" disabled>
+      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+      Please wait
+    </Button>:   <Button  type="submit" className='h-10 px-4 py-2 w-full inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-green-500 text-white hover:bg-green-600'>
+        Create Workspace
+        </Button>}
     </form>
         </div>
       </DialogContent>

@@ -90,19 +90,30 @@ const Page = () => {
     // const [averageMonthlyExpense, setAverageMonthlyExpense] = useState()
 
     const {workspaceId, userId}  = useParams()
-    console.log(typeof workspaceId, "workspace id")
     
     const getWorkspaces = async () => {
       const res = await api.get(`/workspace`);
       return res.data.responseBody;
     }
 
+
     const getWorkspace = async () => {
       const res = await api.get(`/get-workspace/${workspaceId}`);
       return res.data.responseBody;
     }
   
-    const {data: workspaces, isLoading, error} = useQuery({queryKey: ['workspaces', workspaceId, {type: "done"}], queryFn: getWorkspaces});
+    const {data: workspaces, isLoading, error} = useQuery({queryKey: ['workspaces', workspaceId, {type: "done"}],queryFn: async () => {
+      const data = await getWorkspaces();
+      return data?.hasWorkSpace ?? null; // Extract only workspaces
+  }});
+
+  const { data: user, isLoading: userLoading, error: userError } = useQuery({
+    queryKey: ['user'],
+    queryFn: async () => {
+        const data = await getWorkspaces();
+        return data?.user ?? null; // Extract only user data
+    }
+});
 
 
     const {data: currentWorkSpace, isLoading:currentLoading, error:currentError, // refetch:refetchCurrentWorkspace
@@ -110,7 +121,6 @@ const Page = () => {
     } = useQuery(
       {queryKey: ['workspace', workspaceId, {type: "done"}], queryFn: getWorkspace});
       
-      console.log(currentWorkSpace, "curr")
 
       // check if the currentworkspace has income deposits
       const hasIncome = currentWorkSpace?.income.length > 0;
@@ -283,7 +293,7 @@ function PlaceholderDashboardCard() {
               <div className="ml-auto flex items-center space-x-4">
               <div><ModeToggle /></div>
                 {/* {hasIncome && <Search />} */}
-                <UserAvatar />
+                <UserAvatar user={user} />
               </div>
             </div>
           </div>
