@@ -1,12 +1,12 @@
 import axios from 'axios';
 import { useAuthStore } from "@/store/use-auth";
 
-const BASE_URL = "https://fintrack-v2-api.onrender.com/api/v1";
-// const BASE_URL = "http://localhost:8080/api/v1"; 
+// const BASE_URL = "https://fintrack-v2-api.onrender.com/api/v1";
+const BASE_URL = "http://localhost:8080/api/v1"; 
 
 const api = axios.create({
   baseURL: BASE_URL,
-  withCredentials: true, // basiru@1998
+  withCredentials: true, // basiru@1998 
 });
 
 api.interceptors.response.use(

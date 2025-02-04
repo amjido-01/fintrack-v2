@@ -96,6 +96,7 @@ const Page = () => {
       console.log(res.data?.responseBody?.hasWorkSpace, " has")
       return res.data?.responseBody?.hasWorkSpace;
     }
+
     const getUserData = async () => {
       const res = await api.get(`/workspace`);
       console.log(user, "from db")
@@ -108,7 +109,7 @@ const Page = () => {
       return res.data.responseBody;
     }
   
-    const {data: workspaces, isLoading, error} = useQuery({queryKey: ['workspaces', workspaceId, {type: "done"}],queryFn: getWorkspaces});
+    const {data: workspaces, isLoading: workspacesLoading, error} = useQuery({queryKey: ['workspaces', workspaceId, {type: "done"}],queryFn: getWorkspaces});
 
   const { data: user, isLoading: userLoading, error: userError } = useQuery({
     queryKey: ['user'],
@@ -123,7 +124,7 @@ const Page = () => {
       
 
       // check if the currentworkspace has income deposits
-      const hasIncome = currentWorkSpace?.income.length > 0;
+      const hasIncome = currentWorkSpace?.income?.length > 0;
       const workspaceCurrency = currentWorkSpace?.currency === "USD" ? "$" : currentWorkSpace?.currency === "NGN" ? "₦" : currentWorkSpace?.currency === "SAR" ? "ر.س" : currentWorkSpace?.currency === "QAR" ? "ر.ق" : currentWorkSpace?.currency === "AED" ? "د.إ" : "₦";
 
       // function to calculate the top category from expenses
@@ -176,11 +177,11 @@ const Page = () => {
 
 
       useEffect(() => {
-        if (currentWorkSpace && currentWorkSpace?.expenses) {
+        if (currentWorkSpace?.income && currentWorkSpace?.expenses) {
           // subtract the total expenses from the total income
           
           // total expenses
-          const total = currentWorkSpace?.expenses.filter((item: Expense) => !item.isDeleted).reduce((acc: number, expense: Expense) => acc + expense.amount, 0);
+          const total = currentWorkSpace?.expenses?.filter((item: Expense) => !item.isDeleted)?.reduce((acc: number, expense: Expense) => acc + expense.amount, 0) || 0;
           setTotalExpenses(total.toFixed(2));
 
           // total income
@@ -208,11 +209,11 @@ const Page = () => {
         }
       }, [currentWorkSpace])
 
-      // get the total number of expenses
+      // get the total number of expenses 09022548838
       const expenseLenght = currentWorkSpace?.expenses.filter((item: Expense) => !item.isDeleted).length;
 
     
-    if (isLoading || currentLoading) return  <div className="flex  text-primary justify-center items-center h-screen">
+    if (userLoading || currentLoading || workspacesLoading) return  <div className="flex  text-primary justify-center items-center h-screen">
       <div className="flex flex-col items-center">
         <Loader2 className="h-6 w-6 animate-spin mb-2" />
         <p>Getting your workspace ready, please wait...</p>
@@ -286,7 +287,7 @@ function PlaceholderDashboardCard() {
             <div className="flex h-16 items-center px-4">
 
              <div className='flex items-center space-x-4'>
-             <WorkspaceSwitcher workspaces={workspaces?.filter((workspace: Workspace) => !workspace.isDeleted)}  />
+             <WorkspaceSwitcher workspaces={workspaces?.filter((workspace: Workspace) => !workspace.isDeleted) || []}  />
              <MainNav userId={userId as string} workspaceId={workspaceId as string} workspaceName={currentWorkSpace?.workspaceName} />
              </div>
              
@@ -340,7 +341,7 @@ function PlaceholderDashboardCard() {
                   
                   <DashboardCard cardTitle='Remaining Balance' cardContent={balance} cardIcon={workspaceCurrency} />
 
-                  {currentWorkSpace?.expenses.length > 0 ? <DashboardCard cardTitle='Average Daily Expenses' cardContent={averageDailyExpense} cardIcon={<BadgeDollarSign />} /> : 
+                  {currentWorkSpace?.expenses?.length > 0 ? <DashboardCard cardTitle='Average Daily Expenses' cardContent={averageDailyExpense} cardIcon={<BadgeDollarSign />} /> : 
                     <Card>
     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
       <CardTitle className="text-sm font-medium">
@@ -367,7 +368,7 @@ function PlaceholderDashboardCard() {
                   <Card className="w-full md:w-1/2">
                     <CardHeader>
                       <CardTitle className='flex justify-between items-center'>Recent Expenses
-                        {currentWorkSpace?.expenses.filter((expense: Expense) => expense.isDeleted === false).length > 0 && <Link href={`/expenses/${workspaceId}`}><ArrowUpRight /></Link>}
+                        {currentWorkSpace?.expenses?.filter((expense: Expense) => expense.isDeleted === false).length > 0 && <Link href={`/expenses/${workspaceId}`}><ArrowUpRight /></Link>}
                       </CardTitle>
                       <CardDescription>
                         You have {expenseLenght} expenses so far.
@@ -383,7 +384,7 @@ function PlaceholderDashboardCard() {
                   <Card className="col-span-4">
                   <CardHeader>
                     <CardTitle className='flex justify-between items-center'>Transaction History
-                    {currentWorkSpace?.income.length > 0 && <Link href={`/transactions/${workspaceId}`}><ArrowUpRight /></Link>}
+                    {currentWorkSpace?.income?.length > 0 && <Link href={`/transactions/${workspaceId}`}><ArrowUpRight /></Link>}
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="pl-2">
