@@ -36,6 +36,8 @@ import {BadgeDollarSign, Banknote } from "lucide-react"
 import { ArrowUpRight } from 'lucide-react';
 // import { Skeleton } from '@/components/ui/skeleton';
 import api from '@/app/api/axiosConfig';
+import withAuth from '@/components/withAuth';
+import { useAuthStore } from '@/store/use-auth';
 
 
 interface Expense {
@@ -90,17 +92,11 @@ const Page = () => {
     // const [averageMonthlyExpense, setAverageMonthlyExpense] = useState()
 
     const {workspaceId, userId}  = useParams()
+    const {user} = useAuthStore()
     
     const getWorkspaces = async () => {
       const res = await api.get(`/workspace`);
-      console.log(res.data?.responseBody?.hasWorkSpace, " has")
       return res.data?.responseBody?.hasWorkSpace;
-    }
-
-    const getUserData = async () => {
-      const res = await api.get(`/workspace`);
-      console.log(user, "from db")
-      return res.data?.responseBody?.user;
     }
 
 
@@ -111,10 +107,6 @@ const Page = () => {
   
     const {data: workspaces, isLoading: workspacesLoading, error} = useQuery({queryKey: ['workspaces', workspaceId, {type: "done"}],queryFn: getWorkspaces});
 
-  const { data: user, isLoading: userLoading, error: userError } = useQuery({
-    queryKey: ['user'],
-    queryFn: getUserData
-});
 
 
     const {data: currentWorkSpace, isLoading:currentLoading, error:currentError, // refetch:refetchCurrentWorkspace
@@ -213,7 +205,7 @@ const Page = () => {
       const expenseLenght = currentWorkSpace?.expenses.filter((item: Expense) => !item.isDeleted).length;
 
     
-    if (userLoading || currentLoading || workspacesLoading) return  <div className="flex  text-primary justify-center items-center h-screen">
+    if (currentLoading || workspacesLoading) return  <div className="flex  text-primary justify-center items-center h-screen">
       <div className="flex flex-col items-center">
         <Loader2 className="h-6 w-6 animate-spin mb-2" />
         <p>Getting your workspace ready, please wait...</p>
@@ -365,7 +357,7 @@ function PlaceholderDashboardCard() {
                 <div className="flex flex-col md:flex-row gap-4">
 
                 <ExpensesByCategory expenses={currentWorkSpace?.expenses}/>
-                  <Card className="w-full md:w-1/2">
+                  <Card className="w-full md:w-1/2 border-2 border-red-500">
                     <CardHeader>
                       <CardTitle className='flex justify-between items-center'>Recent Expenses
                         {currentWorkSpace?.expenses?.filter((expense: Expense) => expense.isDeleted === false).length > 0 && <Link href={`/expenses/${workspaceId}`}><ArrowUpRight /></Link>}
@@ -425,4 +417,4 @@ function PlaceholderDashboardCard() {
   )
 }
 
-export default Page
+export default withAuth(Page)

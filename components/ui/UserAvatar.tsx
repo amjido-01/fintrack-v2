@@ -17,8 +17,9 @@ import {
   interface User {
     id: string;
     email: string;
-    username: string;
-    name: string      
+    userName: string;
+    name: string     
+
     // profileImage?: string;
   }
   
@@ -59,7 +60,7 @@ import {
     <div className=''>
             {user && (
               <>
-                <p className="text-white">{user.username}</p>
+                <p className="text-white">{user.userName}</p>
                 <p className="text-white">{user.email}</p>
               </>
             )}

@@ -18,7 +18,7 @@ interface AuthState {
   accessToken: string | null;
   loading: boolean;
   isLoggedIn: () => boolean;
-  login: (email: string, password: string) => Promise<string | null>;
+  login: (email: string, password: string) => Promise<User | void>;
   register: (email: string, password: string, name: string, userName: string) => Promise<void>
   logout: () => Promise<void>;
   checkAuth: () => Promise<boolean>;
@@ -52,6 +52,7 @@ export const useAuthStore = create(
         }
       },
 
+
       login: async (email: string, password: string) => {
         set({ loading: true });
         try {
@@ -61,9 +62,9 @@ export const useAuthStore = create(
 
           set({ accessToken, user: responseBody});
           api.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
-          console.log(accessToken, ".....")
+          console.log(accessToken, responseBody, ".....")
           
-          return responseBody.id;
+          return responseBody;
         } catch (error) {
           console.error("Login failed:", error);
           throw error;
@@ -82,8 +83,8 @@ export const useAuthStore = create(
           return false;
         }
         try {
-          const response = await api.get("/profile");
-          console.log(response, "res")
+          const response = await api.get("/user/profile");
+
           const { user } = response.data;
           set({user});
           return true
