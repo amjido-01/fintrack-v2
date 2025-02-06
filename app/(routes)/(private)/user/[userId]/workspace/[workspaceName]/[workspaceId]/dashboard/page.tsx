@@ -309,9 +309,10 @@ function PlaceholderDashboardCard() {
 <ExpensesDialog userId={userId as string} workspaceId={workspaceId as string} />
 </div>}
 
-<div>
+<div className='flex items-center gap-3'>
   <IncomeDialog userId={userId as string} workspaceId={workspaceId as string}  
   />
+  <p className='text-xs text-muted-foreground'>Please Add Icome To Get Started!</p>
 </div>
 </div>
 
