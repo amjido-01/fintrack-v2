@@ -63,7 +63,7 @@ const IncomeDialog: React.FC<Expense> = ({userId, workspaceId,
       }
 
       try {
-        const response = await api.post("/create-income", {
+        const response = await api.post("/incomes", {
           incomeSource,
           date,
           description,

@@ -55,21 +55,16 @@ import { Loader2 } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
-interface Expense {
-  id: string;
-  expenseName: string;
-  amount: number;
-  date: string;
-  category: string;
-  note: string;
-  isDeleted: boolean;
-  workspaceId: string;
-}
+import withAuth from "@/components/withAuth";
+import { useAuthStore } from "@/store/use-auth";
+
 
 const categories = ["Food", "Clothing", "Transportation", "Entertainment", "Medical", "Other"]
 
 const ExpensesPage = () => {
 //   const {data: session} = useSession();
+  const {user} = useAuthStore()
+  console.log(user)
   const queryClient = useQueryClient();
   const { workspaceId } = useParams();
   const { toast } = useToast()
@@ -93,65 +88,43 @@ const ExpensesPage = () => {
   const [note, setNote] = useState("")
 
 
-//   const userId = session?.user?.id;
-
-  const getWorkspace = async () => {
-    const res = await api.get(`/get-workspace/${workspaceId}`);
-    console.log(res.data.responseBody?.expenses, "from expenses page")
-    return res.data.responseBody?.expenses;
-  };
-
-  const getUserData = async () => {
-    const res = await api.get(`/workspace`);
-    return res.data?.responseBody?.user;
-  }
-
-  const { data, isLoading, error,  refetch: refetchCurrentWorkspace } = useQuery<
-    any,
-    Error
-  >({
-    queryKey: ["workspace", workspaceId],
-    queryFn: getWorkspace,
-  });
-
-  console.log(data, "from ex")
-
-  const workspaceCurrency = data?.currency === "USD" ? "$" : data?.currency === "NGN" ? "₦" : data?.currency === "SAR" ? "ر.س" : data?.currency === "QAR" ? "ر.ق" : data?.currency === "AED" ? "د.إ" : "₦";
+  const currWorkspaceName = user?.workspaces?.find(ws => ws.id === workspaceId)?.workspaceName
+  // const workspaceCurrency = data?.currency === "USD" ? "$" : data?.currency === "NGN" ? "₦" : data?.currency === "SAR" ? "ر.س" : data?.currency === "QAR" ? "ر.ق" : data?.currency === "AED" ? "د.إ" : "₦";
 
 
   // delete expense
-  const deleteExpense = async (id: string) => {
-    try {
-      await api.delete(`/api/expense/${id}`);
-      refetchCurrentWorkspace();
-      queryClient.invalidateQueries({
-        queryKey:['workspace', workspaceId, {type: "done"}]
-      })
-      toast({
-        title: "Workspace deleted",
-        description: "Expense has been successfully deleted.",
-        variant: "default",
-      })
-    } catch (error) {
-      toast({
-        title: "Workspace deleted",
-        description: "Failed to delete expense. Please try again.",
-        variant: "default",
-      })
-      console.log("Error deleting expense:", error);
-    }
-  };
+  // const deleteExpense = async (id: string) => {
+  //   try {
+  //     await api.delete(`/api/expense/${id}`);
+  //     refetchCurrentWorkspace();
+  //     queryClient.invalidateQueries({
+  //       queryKey:['workspace', workspaceId, {type: "done"}]
+  //     })
+  //     toast({
+  //       title: "Workspace deleted",
+  //       description: "Expense has been successfully deleted.",
+  //       variant: "default",
+  //     })
+  //   } catch (error) {
+  //     toast({
+  //       title: "Workspace deleted",
+  //       description: "Failed to delete expense. Please try again.",
+  //       variant: "default",
+  //     })
+  //     console.log("Error deleting expense:", error);
+  //   }
+  // };
 
- const editExpense = async (id: string, updatedExpense: Expense) => {
-  try {
-    await api.put(`/api/expense/${id}`, updatedExpense);
-    queryClient.invalidateQueries({
-      queryKey:['workspace', workspaceId, {type: "done"}]
-    })
-  } catch (error) {
-    console.log("Error editing expense:", error);
-  }
- }
+//  const editExpense = async (id: string, updatedExpense: Expense) => {
+//   try {
+//     await api.put(`/api/expense/${id}`, updatedExpense);
+//     queryClient.invalidateQueries({
+//       queryKey:['workspace', workspaceId, {type: "done"}]
+//     })
+//   } catch (error) {
+//     console.log("Error editing expense:", error);
+//   }
+//  }
 
  const handleDeletePopover = (id: string) => {
   setSelectedExpenseId(id);
@@ -163,14 +136,14 @@ const ExpensesPage = () => {
     setIsEditDialogOpen(true);
   };
   
-  const handleDeleteConfirmation = () => {
-    if (selectedExpenseId) {
-      setLoading(true);
-      deleteExpense(selectedExpenseId);
-      setIsDeleteDialogOpen(false);
-      setLoading(false);
-    }
-  };
+  // const handleDeleteConfirmation = () => {
+  //   if (selectedExpenseId) {
+  //     setLoading(true);
+  //     deleteExpense(selectedExpenseId);
+  //     setIsDeleteDialogOpen(false);
+  //     setLoading(false);
+  //   }
+  // };
   
 
   const handleEditConfirmation = () => {
@@ -179,30 +152,16 @@ const ExpensesPage = () => {
   }
 
   const handleEditSave = () => {
-
   }
 
-  // Render logic
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <Loader2 className="h-6 w-6 animate-spin" />
-        <p>Loading expenses...</p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return <p className="text-red-600">Failed to load expenses: {error.message}</p>;
-  }
 
   return (
     <div className="mt-16 container mx-auto">
 
-         {/* <Link href={`/user/${userId}/workspace/${data?.workspaceName}/${workspaceId}/dashboard`} className="flex mb-8 items-center space-x-3 rtl:space-x-reverse">
+         <Link href={`/user/${user?.id}/workspace/${currWorkspaceName}/${workspaceId}/dashboard`} className="flex mb-8 items-center space-x-3 rtl:space-x-reverse">
       <ChevronLeft className="h-6 w-6" />
       Back
-      </Link> */}
+      </Link>
 
       <div>
         <h2 className="text-2xl font-bold tracking-tight">Welcome back!</h2>
@@ -222,7 +181,7 @@ const ExpensesPage = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data?.map((expense: Expense) => (
+          {user?.expenses?.map((expense) => (
             <TableRow key={expense.id}>
               <TableCell className={`${expense.isDeleted ? ' line-through opacity-[0.5]' : ''}`}>{new Date(expense.date).toDateString()}</TableCell>
               <TableCell className={`${expense.isDeleted ? ' line-through opacity-[0.5]' : ''}`}>{expense.expenseName}</TableCell>
@@ -270,7 +229,9 @@ const ExpensesPage = () => {
       </AlertDialogHeader>
       <AlertDialogFooter className='flex items-center gap-3'>
         <AlertDialogCancel>Cancel</AlertDialogCancel>
-        <AlertDialogAction className='text-white' onClick={handleDeleteConfirmation}>
+        <AlertDialogAction className='text-white' 
+        //onClick={handleDeleteConfirmation}
+        >
           {loading ? <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             Deleting...
@@ -386,4 +347,4 @@ const ExpensesPage = () => {
   );
 };
 
-export default ExpensesPage;
+export default withAuth(ExpensesPage);

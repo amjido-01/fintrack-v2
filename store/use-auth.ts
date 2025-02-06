@@ -2,6 +2,43 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import api from "@/app/api/axiosConfig";
 
+interface Expense {
+  id: string;
+  expenseName: string;
+  amount: number;
+  date: string;
+  category: string;
+  note: string;
+  isDeleted: boolean;
+  workspaceId: string;
+}
+
+interface Income {
+  id: string;
+  incomeSource: string;
+  amount: number;
+  date: string;
+  category: string;
+  description: string;
+  workspaceId: string;
+  isDeleted: boolean
+}
+
+interface Workspace {
+  id: string;
+  workspaceName: string;
+  currency: string;
+  description: string;
+  createdById: string;
+  isDeleted: boolean;
+  deletedAt: Date | null;
+  deletedBy: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+  lastActiveAt: Date;
+  expenses: Expense[]; // Replace 'any' with specific Expense interface if available
+  income: Income[];   // Replace 'any' with specific Income interface if available
+}
 
 interface User {
   id: string;
@@ -11,6 +48,9 @@ interface User {
   userName: string;
   createdAt: string;
   updatedAt: string;
+  expenses: Expense[];
+  income: Income[]
+  workspaces: Workspace[]
 }
 
 interface AuthState {

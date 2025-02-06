@@ -10,6 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {motion} from "framer-motion"
 import MiniFooter from '@/components/MiniFooter';
 import { Loader2 } from 'lucide-react';
 import ExpensesDialog from '@/components/ExpensesDialog';
@@ -109,11 +110,12 @@ const Page = () => {
 
 
 
-    const {data: currentWorkSpace, isLoading:currentLoading, error:currentError, // refetch:refetchCurrentWorkspace
+    const {data: currentWorkSpace, isLoading:currentLoading, error:currentError, refetch:refetchCurrentWorkspace
 
     } = useQuery(
       {queryKey: ['workspace', workspaceId, {type: "done"}], queryFn: getWorkspace});
-      
+
+      console.log(currentWorkSpace, "current")
 
       // check if the currentworkspace has income deposits
       const hasIncome = currentWorkSpace?.income?.length > 0;
@@ -205,12 +207,16 @@ const Page = () => {
       const expenseLenght = currentWorkSpace?.expenses.filter((item: Expense) => !item.isDeleted).length;
 
     
-    if (currentLoading || workspacesLoading) return  <div className="flex  text-primary justify-center items-center h-screen">
-      <div className="flex flex-col items-center">
-        <Loader2 className="h-6 w-6 animate-spin mb-2" />
-        <p>Getting your workspace ready, please wait...</p>
-      </div>
-  </div>
+    if (currentLoading || workspacesLoading) return  <div className="flex items-center justify-center text-white bg-[#000000] h-screen w-full">
+    <div className="flex items-center gap-2">
+    <motion.div
+        animate={{ rotate: 360 }}
+        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+        className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
+        />
+        <div>Loading..</div>
+    </div>
+</div>
     if (error || currentError) return <div className="flex justify-center items-center h-screen">
     <div className="flex flex-col items-center">
       <p>{error?.message}</p>
@@ -357,7 +363,7 @@ function PlaceholderDashboardCard() {
                 <div className="flex flex-col md:flex-row gap-4">
 
                 <ExpensesByCategory expenses={currentWorkSpace?.expenses}/>
-                  <Card className="w-full md:w-1/2 border-2 border-red-500">
+                  <Card className="w-full md:w-1/2">
                     <CardHeader>
                       <CardTitle className='flex justify-between items-center'>Recent Expenses
                         {currentWorkSpace?.expenses?.filter((expense: Expense) => expense.isDeleted === false).length > 0 && <Link href={`/expenses/${workspaceId}`}><ArrowUpRight /></Link>}
