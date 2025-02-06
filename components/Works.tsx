@@ -26,7 +26,7 @@ export default function Works() {
   ]
 
   return (
-    <section className="container py-16">
+    <section className="conainer  w-full py-16">
       <div className="container px-4 mx-auto">
         <h2 className="scroll-m-20 mb-5 text-3xl text-center font-extrabold tracking-tight lg:text-4xl">
           How It Works
