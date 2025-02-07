@@ -6,11 +6,11 @@ import Works from "@/components/Works";
 import Testimonial from "@/components/Testimonial";
 import CTA from "@/components/CTA";
 import Footer from "@/components/Footer"
-import NavBar from "@/components/NavBar";
+import Header from "@/components/Header";
 export default function Home() {
   return (
     <main className="">
-      <NavBar />
+      <Header />
      <Hero />
       <HoverSpring />
       <AnimatedLogoCloud />
