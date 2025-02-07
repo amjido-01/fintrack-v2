@@ -17,10 +17,15 @@ const Header = () => {
         <div className='containr w-full z-20 start-0'>
             <header className="md:w-[90%] flex flex-wrap items-center justify-between mx-auto p-3">
                 <Link className="flex items-center justify-center" href="#">
-                    <BrainCircuit className="h-8 w-8 text-[#50E3C2]" />
-                    <span className="ml-2 text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#50E3C2] to-[#4FACFE]">
-                        AI Pulse
-                    </span>
+                <svg width="200" height="50" viewBox="0 0 200 50" xmlns="http://www.w3.org/2000/svg">
+
+                <circle cx="25" cy="25" r="10" fill="green" stroke="white" strokeWidth="2"/>
+                <text x="21" y="29" font-family="Arial" font-size="12" fill="white" font-weight="bold">$</text>
+
+                <text x="45" y="32" font-family="Arial" font-size="18" fill="white" font-weight="bold">FinTrack</text>
+                </svg>
+
+                
                 </Link>
                 <div className="flex gap-3 items-center md:order-2">
                     <ModeToggle />
