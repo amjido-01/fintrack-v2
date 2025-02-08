@@ -309,25 +309,35 @@ function PlaceholderDashboardCard() {
 
           <div className="flex flex-col justify-start md:flex-row md:items-center md:justify-between space-y-2">
 
-<div className='flex flex-col gap-3 md:items-center  space-x-2 mb-2 md:mb-0 border-2 border-red-500'>
-<h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
+          <div className='flex flex-col gap-3 md:flex-row md:items-center space-x-2 mb-2 md:mb-0'>
+  <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
 
-{hasIncome ? <div>
-<ExpensesDialog userId={userId as string} workspaceId={workspaceId as string} /> 
-</div> :<p className='text-xs text-muted-foreground'>Please Add Icome To Get Started!</p>}
+  {/* Add Income Button First */}
+  <div className='flex items-center gap-3'>
+    <IncomeDialog userId={userId as string} workspaceId={workspaceId as string} />
+  </div>
 
-<div className='flex items-center gap-3'>
-  <IncomeDialog userId={userId as string} workspaceId={workspaceId as string}  
-  />
+  {/* Then Check for Income and Show Message or Expenses Dialog */}
+  <div className='flex'>
+    {hasIncome ? (
+      <div className=''>
+        <ExpensesDialog userId={userId as string} workspaceId={workspaceId as string} />
+      </div>
+    ) : (
+      <div>
+        <p className='text-xs text-muted-foreground'>Please Add Income To Get Started!</p>
+      </div>
+    )}
+  </div>
 </div>
-</div>
+
 
 <div className="flex items-center space-x-2 mt-2 md:mt-2">
   {hasIncome && <CalendarDateRangePicker />}
 </div>
 </div>
             
-              {hasIncome ? 
+            {hasIncome ? 
             <div className=''>
             <Tabs defaultValue="overview" className="space-y-4">
               <TabsList>
@@ -417,9 +427,7 @@ function PlaceholderDashboardCard() {
                 <PlaceholderChart />
                 </div>
               </div>
-
             </div>
-            
             }
           </div>
 
