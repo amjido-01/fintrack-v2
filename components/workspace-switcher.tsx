@@ -77,7 +77,7 @@ const [selectedWorkspace, setSelectedWorkspace] = React.useState<Workspace>(work
             role="combobox"
             aria-expanded={open}
             aria-label="Select a team"
-            className={cn("w-[200px] justify-between", className)}
+            className={cn("w-[150px] justify-start justifybetween", className)}
           >
             <Avatar className="mr-2 h-5 w-5">
               <AvatarImage

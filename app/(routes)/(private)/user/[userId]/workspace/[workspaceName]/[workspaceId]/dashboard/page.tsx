@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/card";
 import {motion} from "framer-motion"
 import MiniFooter from '@/components/MiniFooter';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Menu } from 'lucide-react';
 import ExpensesDialog from '@/components/ExpensesDialog';
 import { Total } from '@/components/Total';
 import {
@@ -279,21 +279,28 @@ function PlaceholderDashboardCard() {
     return (
       <>
        
-        <div className="flex-col md:flex ">
+        <div className="flex-col md:flex">
 
           <div className="border-b">
-            <div className="flex h-16 items-center px-4">
+            <div className="flex justify-between h-16 items-center px-4 ">
 
              <div className='flex items-center space-x-4'>
              <WorkspaceSwitcher workspaces={workspaces?.filter((workspace: Workspace) => !workspace.isDeleted) || []}  />
-             <MainNav userId={userId as string} workspaceId={workspaceId as string} workspaceName={currentWorkSpace?.workspaceName} />
              </div>
-             
+              <div className='md:w-[40%]'>
+              <div className='flex md:hidden'>
+                <Menu />
+              </div>
+             <div className='hidden md:flex'>
+             <MainNav userId={userId as string} workspaceId={workspaceId as string} workspaceName={currentWorkSpace?.workspaceName} />
               <div className="ml-auto flex items-center space-x-4">
               <div><ModeToggle /></div>
                 {/* {hasIncome && <Search />} */}
                 <UserAvatar user={user} />
               </div>
+             </div>
+              </div>
+              
             </div>
           </div>
 
@@ -302,17 +309,16 @@ function PlaceholderDashboardCard() {
 
           <div className="flex flex-col justify-start md:flex-row md:items-center md:justify-between space-y-2">
 
-<div className='flex items-center  space-x-2 mb-2 md:mb-0'>
+<div className='flex flex-col gap-3 md:items-center  space-x-2 mb-2 md:mb-0 border-2 border-red-500'>
 <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
 
-{hasIncome && <div>
-<ExpensesDialog userId={userId as string} workspaceId={workspaceId as string} />
-</div>}
+{hasIncome ? <div>
+<ExpensesDialog userId={userId as string} workspaceId={workspaceId as string} /> 
+</div> :<p className='text-xs text-muted-foreground'>Please Add Icome To Get Started!</p>}
 
 <div className='flex items-center gap-3'>
   <IncomeDialog userId={userId as string} workspaceId={workspaceId as string}  
   />
-  <p className='text-xs text-muted-foreground'>Please Add Icome To Get Started!</p>
 </div>
 </div>
 
