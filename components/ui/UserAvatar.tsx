@@ -44,10 +44,6 @@ import {
     <AvatarImage src="https://github.com/shadcn.png" />
    <AvatarFallback>CN</AvatarFallback>
     </Avatar>
-   <div className='flex items-center'>
-    <p>{user && user.name}</p>
-    <ChevronDown />
-   </div>
 
   </DropdownMenuTrigger>
   <DropdownMenuContent className='min-w-[18rem] mr-4'>

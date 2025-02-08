@@ -10,9 +10,20 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer"
+import { Bar, BarChart, ResponsiveContainer } from "recharts"
 import {motion} from "framer-motion"
 import MiniFooter from '@/components/MiniFooter';
-import { Loader2, Menu } from 'lucide-react';
+import { Loader2, Menu, Plus, Minus } from 'lucide-react';
 import ExpensesDialog from '@/components/ExpensesDialog';
 import { Total } from '@/components/Total';
 import {
@@ -21,6 +32,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs";
+import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { DashboardCard } from '@/components/DashboardCard';
 import {ExpensesByCategory} from '@/components/ExpensesByCategory';
@@ -79,6 +91,48 @@ interface Workspace {
   income: Income[];   // Replace 'any' with specific Income interface if available
 }
 
+const datas = [
+  {
+    goal: 400,
+  },
+  {
+    goal: 300,
+  },
+  {
+    goal: 200,
+  },
+  {
+    goal: 300,
+  },
+  {
+    goal: 200,
+  },
+  {
+    goal: 278,
+  },
+  {
+    goal: 189,
+  },
+  {
+    goal: 239,
+  },
+  {
+    goal: 300,
+  },
+  {
+    goal: 200,
+  },
+  {
+    goal: 278,
+  },
+  {
+    goal: 189,
+  },
+  {
+    goal: 349,
+  },
+]
+
 
 
 const Page = () => {
@@ -89,6 +143,8 @@ const Page = () => {
     const [averageDailyExpense, setAverageDailyExpense] = useState(0);
     const [topCategory, setTopCategory] = useState("");
     const [topIncome, setTopIncome] = useState("");
+    const [goal, setGoal] = React.useState(350)
+
     // const [averageMonthlyIncome, setAverageMonthlyIncome] = useState(0)
     // const [averageMonthlyExpense, setAverageMonthlyExpense] = useState()
 
@@ -167,6 +223,11 @@ const Page = () => {
           return incomeTotals[current] > incomeTotals[top] ? current : top;
         }, Object.keys(incomeTotals)[0]);
         setTopIncome(topIncome);
+      }
+
+ 
+      function onClick(adjustment: number) {
+        setGoal(Math.max(200, Math.min(400, goal + adjustment)))
       }
 
 
@@ -285,20 +346,89 @@ function PlaceholderDashboardCard() {
             <div className="flex justify-between h-16 items-center px-4 ">
 
              <div className='flex items-center space-x-4'>
+             <div className='md:hidden'>
+             <Drawer>
+      <DrawerTrigger asChild>
+      <Menu className='cursor-pointer'/>
+      </DrawerTrigger>
+      <DrawerContent>
+        <div className="mx-auto w-full max-w-sm">
+          {/* <DrawerHeader>
+            <DrawerTitle>Move Goal</DrawerTitle>
+            <DrawerDescription>Set your daily activity goal.</DrawerDescription>
+          </DrawerHeader> */}
+          <div className="p-4 pb-0">
+            <div className="flex items-center justify-center space-x-2">
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-8 w-8 shrink-0 rounded-full"
+                onClick={() => onClick(-10)}
+                disabled={goal <= 200}
+              >
+                <Minus />
+                <span className="sr-only">Decrease</span>
+              </Button>
+              <div className="flex-1 text-center">
+                <div className="text-7xl font-bold tracking-tighter">
+                  {goal}
+                </div>
+                <div className="text-[0.70rem] uppercase text-muted-foreground">
+                  Calories/day
+                </div>
+              </div>
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-8 w-8 shrink-0 rounded-full"
+                onClick={() => onClick(10)}
+                disabled={goal >= 400}
+              >
+                <Plus />
+                <span className="sr-only">Increase</span>
+              </Button>
+            </div>
+            <div className="mt-3 h-[120px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={datas}>
+                  <Bar
+                    dataKey="goal"
+                    style={
+                      {
+                        fill: "hsl(var(--foreground))",
+                        opacity: 0.9,
+                      } as React.CSSProperties
+                    }
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+          <DrawerFooter>
+            <Button>Submit</Button>
+            <DrawerClose asChild>
+              <Button variant="outline">Cancel</Button>
+            </DrawerClose>
+          </DrawerFooter>
+        </div>
+      </DrawerContent>
+              </Drawer>
+             </div>
              <WorkspaceSwitcher workspaces={workspaces?.filter((workspace: Workspace) => !workspace.isDeleted) || []}  />
              </div>
-              <div className='md:w-[40%]'>
-              <div className='flex md:hidden'>
-                <Menu />
-              </div>
-             <div className='hidden md:flex'>
-             <MainNav userId={userId as string} workspaceId={workspaceId as string} workspaceName={currentWorkSpace?.workspaceName} />
-              <div className="ml-auto flex items-center space-x-4">
-              <div><ModeToggle /></div>
-                {/* {hasIncome && <Search />} */}
+
+              <div className='flex flex-row-reverse gap-8'>
+              <div className='flex items-center gap-4'>
+                <div><ModeToggle /></div>
                 <UserAvatar user={user} />
               </div>
+              <div className='hidden md:flex'>
+             <MainNav userId={userId as string} workspaceId={workspaceId as string} workspaceName={currentWorkSpace?.workspaceName} />
+              <div className="ml-auto flex items-center space-x-4">
+                {/* {hasIncome && <Search />} */}
+              </div>
              </div>
+
               </div>
               
             </div>
@@ -320,7 +450,7 @@ function PlaceholderDashboardCard() {
   {/* Then Check for Income and Show Message or Expenses Dialog */}
   <div className='flex'>
     {hasIncome ? (
-      <div className=''>
+      <div className='w-full'>
         <ExpensesDialog userId={userId as string} workspaceId={workspaceId as string} />
       </div>
     ) : (
