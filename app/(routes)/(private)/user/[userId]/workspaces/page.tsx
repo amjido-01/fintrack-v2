@@ -1,6 +1,5 @@
 "use client";
 import React from 'react';
-import axios from 'axios';
 import { MainNav } from '@/components/main-nav';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
@@ -24,15 +23,15 @@ import Link from 'next/link';
 import { motion } from "framer-motion"
 import { useToast } from "@/hooks/use-toast"
 import { Workspace } from '@/types/types';
-import { Loader2, Plus, Briefcase, Ellipsis, ChartSpline } from "lucide-react"
+import { Plus, Briefcase, Ellipsis } from "lucide-react"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-
-
+import NavDrawer from '@/components/NavDrawer';
+import { ModeToggle } from '@/components/ui/ModeToggle';
 const Page = () => {
     const router = useRouter()
     const { toast } = useToast()
     const {user} = useAuthStore()
-
+    const {userId} = useParams()
     
       const handleCreateNewWorkspace = () => {
         router.push('/createworkspace');
@@ -44,19 +43,34 @@ const Page = () => {
       console.log(filteredWorkspaces, "list")
     
   return (
-    <div className="container mx-auto px-4">
+    <div className="containe mx-auto px-4">
 
-      <div className="border-b">
-        <div className="flex h-16 items-center px-4">
-          {/* <MainNav userId={userId} 
-          workspaceName={currentWorkSpace?.workspaceName} 
-          workspaceId={workspaceId as string} 
-          /> */}
-          <div className="ml-auto flex items-center space-x-4">
-            <UserAvatar />
+<div className="border-b">
+            <div className="flex justify-between h-16 items-center px-4 ">
+
+             <div className='flex items-center space-x-4'>
+             <div className='md:hidden'>
+             {/* <NavDrawer userId={userId as string} workspaceId={workspaceId as string} workspaceName={currentWorkSpace?.workspaceName}/> */}
+             </div>
+             {/* <WorkspaceSwitcher workspaces={workspaces?.filter((workspace: Workspace) => !workspace.isDeleted) || []}  /> */}
+             </div>
+
+              <div className='flex flex-row-reverse gap-8'>
+              <div className='flex items-center gap-4'>
+                <div><ModeToggle /></div>
+                <UserAvatar user={user} />
+              </div>
+              <div className='hidden md:flex'>
+             {/* <MainNav userId={userId as string} workspaceId={workspaceId as string} workspaceName={currentWorkSpace?.workspaceName} /> */}
+              <div className="ml-auto flex items-center space-x-4">
+                {/* {hasIncome && <Search />} */}
+              </div>
+             </div>
+
+              </div>
+              
+            </div>
           </div>
-        </div>
-      </div>
 
     <h1 className="text-3xl font-bold my-8">Select a Workspace</h1>
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

@@ -138,11 +138,6 @@ const Page = () => {
         setTopIncome(topIncome);
       }
 
- 
-      function onClick(adjustment: number) {
-        setGoal(Math.max(200, Math.min(400, goal + adjustment)))
-      }
-
 
       useEffect(() => {
         if (currentWorkSpace?.income && currentWorkSpace?.expenses) {
