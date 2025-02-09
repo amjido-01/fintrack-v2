@@ -2,7 +2,6 @@
 import React, { useEffect } from 'react'
 import { MainNav } from '@/components/main-nav'
 import UserAvatar from '@/components/ui/UserAvatar'
-import axios from 'axios'
 import api from '@/app/api/axiosConfig'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
@@ -80,7 +79,8 @@ const Page = () => {
   }, [currentWorkSpace])
 
   const updateWorkspace = async (data: Partial<Workspace>): Promise<Workspace> => {
-    const res = await axios.put(`/api/update-workspace/${workspaceId}`, data)
+    const res = await api.put(`/update-workspace/${workspaceId}`, data)
+    console.log(res.data, " from update")
     return res.data
   }
 

@@ -51,11 +51,14 @@ export default function WorkspaceSwitcher({ className, workspaces }: WorkspaceSw
   const router = useRouter();
   const {workspaceId}  = useParams()
 
-const workspace = workspaces?.filter(workspace => workspace.id == workspaceId)
+  const workspace = workspaces?.find(workspace => workspace.id == workspaceId);
+  const [selectedWorkspace, setSelectedWorkspace] = React.useState<Workspace | null>(workspace || null);
 
-const [selectedWorkspace, setSelectedWorkspace] = React.useState<Workspace>(workspace[0]);
-
+  if (!workspaces || workspaces.length === 0) {
+    return <p className="text-center text-gray-500">No workspaces available.</p>;
+  }
   
+
   return (
     <Dialog open={showNewWorkspaceDialog} onOpenChange={setShowNewWorkspaceDialog}>
       <Popover open={open} onOpenChange={setOpen}>
@@ -73,7 +76,11 @@ const [selectedWorkspace, setSelectedWorkspace] = React.useState<Workspace>(work
                 alt={selectedWorkspace?.workspaceName}
                 className="grayscale"
               />
-              <AvatarFallback>W</AvatarFallback>
+              <AvatarFallback>
+              <p className="truncate">
+              {selectedWorkspace ? selectedWorkspace.workspaceName : "No Workspace Selected"}
+              </p>
+              </AvatarFallback>
             </Avatar>
             <p className="truncate">
             {workspaces.find((workspace) => workspace.id === selectedWorkspace?.id)?.workspaceName}
@@ -113,7 +120,7 @@ const [selectedWorkspace, setSelectedWorkspace] = React.useState<Workspace>(work
           <CheckIcon
             className={cn(
               "ml-auto h-4 w-4",
-              selectedWorkspace.id === workspace.id ? "opacity-100" : "opacity-0"
+              selectedWorkspace?.id === workspace.id ? "opacity-100" : "opacity-0"
             )}
           />
         </CommandItem>

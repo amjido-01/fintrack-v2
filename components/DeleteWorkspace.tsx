@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useToast } from "@/hooks/use-toast"
-import axios from "axios";
+import api from "@/app/api/axiosConfig"
 import { useAuthStore } from "@/store/use-auth"
 import { useRouter } from "next/navigation"
 // import { useSession } from "next-auth/react";
@@ -43,7 +43,7 @@ export default function DeleteWorkspace({workspaceId, userWorkspace}: DeleteWork
     
     try {
       // Simulating API call
-      await axios.delete(`/api/workspac/${workspaceId}`)
+      await api.delete(`/delete-workspace/${workspaceId}`)
       if (userWorkspace.length > 0) {
         router.push(`/user/${user?.id}/workspaces`)
       } else {
