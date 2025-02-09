@@ -18,13 +18,11 @@ interface DeleteWorkspaceProps {
 }
 
 export default function DeleteWorkspace({workspaceId, userWorkspace}: DeleteWorkspaceProps) {
-  const {user} = useAuthStore()  
+  const {user, setUser} = useAuthStore()  
   const [confirmText, setConfirmText] = useState("")
   const [isDeleting, setIsDeleting] = useState(false)
   const { toast } = useToast()
   const router = useRouter()
-//   const { data: session } = useSession()
-//   const userId = session?.user?.id
     
 
   const handleDelete = async () => {
@@ -39,11 +37,15 @@ export default function DeleteWorkspace({workspaceId, userWorkspace}: DeleteWork
     }
 
     setIsDeleting(true)
-    console.log(workspaceId, "from delete component")
     
     try {
-      // Simulating API call
       await api.delete(`/delete-workspace/${workspaceId}`)
+
+      if (user) {
+        const updatedWorkspaces = user.workspaces.filter(ws => ws.id !== workspaceId);
+        setUser({ ...user, workspaces: updatedWorkspaces });  // Update Zustand state
+    }
+
       if (userWorkspace.length > 0) {
         router.push(`/user/${user?.id}/workspaces`)
       } else {

@@ -63,6 +63,7 @@ interface AuthState {
   logout: () => Promise<void>;
   checkAuth: () => Promise<boolean>;
   refreshToken: () => Promise<void>;
+  setUser: (user: User | null) => void;
 }
 
 
@@ -76,6 +77,8 @@ export const useAuthStore = create(
       isLoggedIn: () => {
         return !!get().accessToken;
       },
+
+      setUser: (user) => set({ user }),
 
       register: async (name: string, email: string, password: string, userName: string) => {
         try {
