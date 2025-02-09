@@ -57,7 +57,8 @@ import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
 import withAuth from "@/components/withAuth";
 import { useAuthStore } from "@/store/use-auth";
-
+import { Expense } from "@/types/types";
+import { useEffect } from "react";
 
 const categories = ["Food", "Clothing", "Transportation", "Entertainment", "Medical", "Other"]
 
@@ -70,11 +71,8 @@ const ExpensesPage = () => {
   const { toast } = useToast()
 
      const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-     
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-
     const [isEditFormOpen, setIsEditFormOpen] = useState(false);
-
   const [loading, setLoading] = useState(false);
   const [selectedExpenseId, setSelectedExpenseId] = useState<string | null>(
     null
@@ -88,32 +86,60 @@ const ExpensesPage = () => {
   const [note, setNote] = useState("")
 
 
-  const currWorkspaceName = user?.workspaces?.find(ws => ws.id === workspaceId)?.workspaceName
-  // const workspaceCurrency = data?.currency === "USD" ? "$" : data?.currency === "NGN" ? "₦" : data?.currency === "SAR" ? "ر.س" : data?.currency === "QAR" ? "ر.ق" : data?.currency === "AED" ? "د.إ" : "₦";
+  const getWorkspace = async () => {
+    const res = await api.get(`/get-workspace/${workspaceId}`);
+    return res.data.responseBody;
+  }
 
+  const currWorkspaceName = user?.workspaces?.find(ws => ws.id === workspaceId)?.workspaceName
+
+    // Reset form when closing edit dialog
+    // useEffect(() => {
+    //   if (!isEditFormOpen) {
+    //     setIncomeSource('');
+    //     setAmount(undefined);
+    //     setCategory(categories[0]);
+    //     setDate('');
+    //     setDescription('');
+    //     setSelectedIncome(null);
+    //     setSelectedTransactionId(null);
+    //   }
+    // }, [isEditFormOpen]);
+
+
+      const { data, isLoading, error, refetch: refetchCurrentWorkspace } = useQuery<
+        any,
+        Error
+        >({
+        queryKey: ["workspace", workspaceId, {type: "done"}],
+        queryFn: getWorkspace,
+        });
+
+              // Get current workspace details from user data
+      const workspaceCurrency = data?.currency === "USD" ? "$" : data?.currency === "NGN" ? "₦" : data?.currency === "SAR" ? "ر.س" : data?.currency === "QAR" ? "ر.ق" : data?.currency === "AED" ? "د.إ" : "₦";
 
   // delete expense
-  // const deleteExpense = async (id: string) => {
-  //   try {
-  //     await api.delete(`/api/expense/${id}`);
-  //     refetchCurrentWorkspace();
-  //     queryClient.invalidateQueries({
-  //       queryKey:['workspace', workspaceId, {type: "done"}]
-  //     })
-  //     toast({
-  //       title: "Workspace deleted",
-  //       description: "Expense has been successfully deleted.",
-  //       variant: "default",
-  //     })
-  //   } catch (error) {
-  //     toast({
-  //       title: "Workspace deleted",
-  //       description: "Failed to delete expense. Please try again.",
-  //       variant: "default",
-  //     })
-  //     console.log("Error deleting expense:", error);
-  //   }
-  // };
+  const deleteExpense = async (id: string) => {
+    try {
+      await api.delete(`/delete-expense/${id}`);
+      refetchCurrentWorkspace()
+      queryClient.invalidateQueries({
+        queryKey:['workspace', workspaceId, {type: "done"}]
+      })
+      toast({
+        title: "Workspace deleted",
+        description: "Expense has been successfully deleted.",
+        variant: "default",
+      })
+    } catch (error) {
+      toast({
+        title: "Workspace deleted",
+        description: "Failed to delete expense. Please try again.",
+        variant: "default",
+      })
+      console.log("Error deleting expense:", error);
+    }
+  };
 
 //  const editExpense = async (id: string, updatedExpense: Expense) => {
 //   try {
@@ -126,6 +152,10 @@ const ExpensesPage = () => {
 //   }
 //  }
 
+
+
+
+
  const handleDeletePopover = (id: string) => {
   setSelectedExpenseId(id);
   setIsDeleteDialogOpen(true);
@@ -136,14 +166,14 @@ const ExpensesPage = () => {
     setIsEditDialogOpen(true);
   };
   
-  // const handleDeleteConfirmation = () => {
-  //   if (selectedExpenseId) {
-  //     setLoading(true);
-  //     deleteExpense(selectedExpenseId);
-  //     setIsDeleteDialogOpen(false);
-  //     setLoading(false);
-  //   }
-  // };
+  const handleDeleteConfirmation = async () => {
+    if (selectedExpenseId) {
+      setLoading(true);
+      await deleteExpense(selectedExpenseId);
+      setIsDeleteDialogOpen(false);
+      setLoading(false);
+    }
+  };
   
 
   const handleEditConfirmation = () => {
@@ -230,7 +260,7 @@ const ExpensesPage = () => {
       <AlertDialogFooter className='flex items-center gap-3'>
         <AlertDialogCancel>Cancel</AlertDialogCancel>
         <AlertDialogAction className='text-white' 
-        //onClick={handleDeleteConfirmation}
+        onClick={handleDeleteConfirmation}
         >
           {loading ? <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />

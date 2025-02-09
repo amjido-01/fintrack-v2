@@ -56,13 +56,11 @@ import api from "@/app/api/axiosConfig";
 import { Income } from "@/types/types";
 const categories = ["Salary", "Business", "Freelance", "Investment", "Gift", "Other"];
 
-// Interface for TypeScript type checking (add to your types file if available)
 
 const Page = () => {
   const queryClient = useQueryClient();
   const { workspaceId } = useParams();
   const { toast } = useToast();
-  // Get user and setUser from auth store for state management
   const { user } = useAuthStore();
 
   // State management for UI components
@@ -86,7 +84,6 @@ const Page = () => {
   
   const getWorkspace = async () => {
     const res = await api.get(`/get-workspace/${workspaceId}`);
-    console.log(res.data.responseBody, "fff")
     return res.data.responseBody;
   }
 
