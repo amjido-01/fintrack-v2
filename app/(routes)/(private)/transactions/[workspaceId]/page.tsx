@@ -53,19 +53,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from "@/components/ui/textarea";
 import { useAuthStore } from "@/store/use-auth";
 import api from "@/app/api/axiosConfig";
+import { Income } from "@/types/types";
 const categories = ["Salary", "Business", "Freelance", "Investment", "Gift", "Other"];
 
 // Interface for TypeScript type checking (add to your types file if available)
-interface Income {
-  id: string;
-  incomeSource: string;
-  amount: number;
-  category: string;
-  date: string;
-  description: string;
-  isDeleted?: boolean;
-  workspaceId?: string;
-}
 
 const Page = () => {
   const queryClient = useQueryClient();

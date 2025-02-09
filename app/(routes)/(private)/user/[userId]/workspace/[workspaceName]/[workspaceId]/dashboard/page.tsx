@@ -42,45 +42,9 @@ import NavDrawer from '@/components/NavDrawer';
 import api from '@/app/api/axiosConfig';
 import withAuth from '@/components/withAuth';
 import { useAuthStore } from '@/store/use-auth';
-
-
-interface Expense {
-  id: string;
-  expenseName: string;
-  amount: number;
-  date: string;
-  category: string;
-  note: string;
-  workspaceId: string;
-  isDeleted: boolean;
-}
-
-interface Income {
-  id: string;
-  incomeSource: string;
-  amount: number;
-  date: string;
-  category: string;
-  description: string;
-  workspaceId: string;
-  isDeleted: boolean
-}
-
-interface Workspace {
-  id: string;
-  workspaceName: string;
-  currency: string;
-  description: string;
-  createdById: string;
-  isDeleted: boolean;
-  deletedAt: Date | null;
-  deletedBy: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-  lastActiveAt: Date;
-  expenses: Expense[]; // Replace 'any' with specific Expense interface if available
-  income: Income[];   // Replace 'any' with specific Income interface if available
-}
+import { Expense } from '@/types/types';
+import { Income } from '@/types/types';
+import { Workspace } from '@/types/types';
 
 
 
@@ -226,7 +190,7 @@ const Page = () => {
         />
         <div>Loading..</div>
     </div>
-</div>
+    </div>
     if (error || currentError) return <div className="flex justify-center items-center h-screen">
     <div className="flex flex-col items-center">
       <p>{error?.message}</p>

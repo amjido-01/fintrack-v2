@@ -32,21 +32,9 @@ import {
 import WorkSpaceDialog from "./WorkSpaceDialog"
 import { useParams } from "next/navigation"
 import { useRouter } from "next/navigation"
+import { Workspace } from "@/types/types"
 // import useWorkspaceStore from "@/store/useWorkspaceStore"
 
-interface Workspace {
-    id: string;
-    workspaceName: string;
-    currency: string;
-    description: string;
-    createdById: string;
-    isDeleted: boolean;
-    deletedAt: Date | null;
-    deletedBy: string | null;
-    createdAt: Date;
-    updatedAt: Date;
-    lastActiveAt: Date;  // Replace 'any' with specific Income interface if available
-  }
 
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<typeof PopoverTrigger>
 
