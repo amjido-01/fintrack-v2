@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { useParams } from "next/navigation";
 import { useMutation } from "@tanstack/react-query"; // Removed unnecessary useQuery
 import { Toggle } from "@/components/ui/toggle";
@@ -142,8 +141,9 @@ const Page = () => {
   const mutation = useMutation({
     mutationFn: ({ id, updatedIncome }: { id: string; updatedIncome: Partial<Income> }) => 
       api.put(`/edit-income/${id}`, updatedIncome),
+    
     onSuccess: () => {
-      queryClient.invalidateQueries({
+     queryClient.invalidateQueries({
         queryKey: ['workspace', workspaceId, { type: "done" }]
       });
       toast({
@@ -221,7 +221,6 @@ const Page = () => {
           { id: selectedTransactionId, updatedIncome },
           {
             onSuccess: (data) => {
-              console.log("Update successful:", data);
               setIsEditFormOpen(false);
               toast({
                 title: "Success",

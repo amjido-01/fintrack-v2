@@ -60,13 +60,10 @@ import { useAuthStore } from "@/store/use-auth";
 import { Expense } from "@/types/types";
 import { useEffect } from "react";
 import { useMutation } from "@tanstack/react-query"
-
 const categories = ["Food", "Clothing", "Transportation", "Entertainment", "Medical", "Other"]
 
 const ExpensesPage = () => {
-//   const {data: session} = useSession();
   const {user} = useAuthStore()
-  console.log(user)
   const queryClient = useQueryClient();
   const { workspaceId } = useParams();
   const { toast } = useToast()
@@ -78,6 +75,7 @@ const ExpensesPage = () => {
   const [selectedExpenseId, setSelectedExpenseId] = useState<string | null>(
     null
   );
+  const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
 
   const [expenseName, setExpenseName] = useState('')
   const [date, setDate] = useState('')
@@ -92,59 +90,62 @@ const ExpensesPage = () => {
     return res.data.responseBody;
   }
 
-  const currWorkspaceName = user?.workspaces?.find(ws => ws.id === workspaceId)?.workspaceName
-
-    // Reset form when closing edit dialog
-    useEffect(() => {
-      if (!isEditFormOpen) {
-        setExpenseName('');
-        setAmount("");
-        setCategory(categories[0]);
-        setDate('');
-        setNote('');
-        setSelectedExpenseId(null);
-      }
-    }, [isEditFormOpen]);
-
-
-      const { data, isLoading, error, refetch: refetchCurrentWorkspace } = useQuery<
-        any,
-        Error
-        >({
-        queryKey: ["workspace", workspaceId, {type: "done"}],
-        queryFn: getWorkspace,
-        });
-
-              // Get current workspace details from user data
-      const workspaceCurrency = data?.currency === "USD" ? "$" : data?.currency === "NGN" ? "₦" : data?.currency === "SAR" ? "ر.س" : data?.currency === "QAR" ? "ر.ق" : data?.currency === "AED" ? "د.إ" : "₦";
-
-  // delete expense
-  const deleteExpense = async (id: string) => {
-    try {
-      await api.delete(`/delete-expense/${id}`);
-      refetchCurrentWorkspace()
-      queryClient.invalidateQueries({
-        queryKey:['workspace', workspaceId, {type: "done"}]
-      })
-      toast({
-        title: "Workspace deleted",
-        description: "Expense has been successfully deleted.",
-        variant: "default",
-      })
-    } catch (error) {
-      toast({
-        title: "Workspace deleted",
-        description: "Failed to delete expense. Please try again.",
-        variant: "default",
-      })
-      console.log("Error deleting expense:", error);
+  // Reset form when closing edit dialog
+  useEffect(() => {
+    if (!isEditFormOpen) {
+      setExpenseName('');
+      setAmount("");
+      setCategory(categories[0]);
+      setDate('');
+      setNote('');
+      setSelectedExpense(null)
+      setSelectedExpenseId(null);
     }
-  };
+  }, [isEditFormOpen]);
 
-  // Mutation handler for editing expenses
+  
+  const { data, isLoading, error, refetch: refetchCurrentWorkspace } = useQuery<
+    any,
+    Error
+    >({
+    queryKey: ["workspace", workspaceId, {type: "done"}],
+    queryFn: getWorkspace,
+    });
+
+
+    // Get current workspace details from user data
+    const workspaceCurrency = data?.currency === "USD" ? "$" : data?.currency === "NGN" ? "₦" : data?.currency === "SAR" ? "ر.س" : data?.currency === "QAR" ? "ر.ق" : data?.currency === "AED" ? "د.إ" : "₦";
+
+
+    // delete expense
+    const deleteExpense = async (id: string) => {
+      try {
+        await api.delete(`/delete-expense/${id}`);
+        refetchCurrentWorkspace()
+        queryClient.invalidateQueries({
+          queryKey:['workspace', workspaceId, {type: "done"}]
+        })
+        toast({
+          title: "Workspace deleted",
+          description: "Expense has been successfully deleted.",
+          variant: "default",
+        })
+      } catch (error) {
+        toast({
+          title: "Workspace deleted",
+          description: "Failed to delete expense. Please try again.",
+          variant: "default",
+        })
+        console.log("Error deleting expense:", error);
+      }
+    };
+
+
+      // Mutation handler for editing expenses
 const expenseMutation = useMutation({
   mutationFn: ({ id, updatedExpense }: { id: string; updatedExpense: Partial<Expense> }) =>
     api.put(`/edit-expense/${id}`, updatedExpense),
+
   onSuccess: () => {
     queryClient.invalidateQueries({
       queryKey: ["workspace", workspaceId, { type: "done" }],
@@ -165,7 +166,45 @@ const expenseMutation = useMutation({
 });
 
 
-  const selectedExpense = user?.expenses?.find(e => e.id === selectedExpenseId);
+
+const handleDeletePopover = (id: string) => {
+  setSelectedExpenseId(id);
+  setIsDeleteDialogOpen(true);
+  };
+
+  const handleEditPopover = (expense: Expense) => {
+    setSelectedExpenseId(expense.id);
+    setSelectedExpense(expense)
+    setExpenseName(expense.expenseName);
+    setAmount(expense.amount.toString()); // Ensure it's a string for input
+    setCategory(expense.category);
+    setDate(expense.date.split('T')[0]); // Extract date properly
+    setNote(expense.note);
+    setIsEditDialogOpen(true);
+  };
+
+
+  const handleDeleteConfirmation = async () => {
+    if (selectedExpenseId) {
+      setLoading(true);
+      await deleteExpense(selectedExpenseId);
+      setIsDeleteDialogOpen(false);
+      setLoading(false);
+    }
+  };
+  
+
+  const handleEditConfirmation = () => {
+    setIsEditDialogOpen(false)
+    setIsEditFormOpen(true);
+  }
+
+
+
+  const currWorkspaceName = user?.workspaces?.find(ws => ws.id === workspaceId)?.workspaceName
+
+
+  // const selectedExpense = user?.expenses?.find(e => e.id === selectedExpenseId);
 
   const handleEditSave = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -193,7 +232,6 @@ const expenseMutation = useMutation({
       { id: selectedExpenseId, updatedExpense },
       {
         onSuccess: (data) => {
-          console.log("Update successful:", data);
           setIsEditFormOpen(false);
           toast({
             title: "Success",
@@ -218,45 +256,10 @@ const expenseMutation = useMutation({
   
   
 
-
-
- const handleDeletePopover = (id: string) => {
-  setSelectedExpenseId(id);
-  setIsDeleteDialogOpen(true);
-  };
-
-
-  const handleEditPopover = (expense: Expense) => {
-    setSelectedExpenseId(expense.id);
-    setExpenseName(expense.expenseName);
-    setAmount(expense.amount.toString()); // Ensure it's a string for input
-    setCategory(expense.category);
-    setDate(expense.date.split('T')[0]); // Extract date properly
-    setNote(expense.note);
-    setIsEditDialogOpen(true);
-  };
-  
-  
-  const handleDeleteConfirmation = async () => {
-    if (selectedExpenseId) {
-      setLoading(true);
-      await deleteExpense(selectedExpenseId);
-      setIsDeleteDialogOpen(false);
-      setLoading(false);
-    }
-  };
-  
-
-  const handleEditConfirmation = () => {
-    setIsEditDialogOpen(false)
-    setIsEditFormOpen(true);
-  }
-
-
   return (
     <div className="mt-16 container mx-auto">
 
-         <Link href={`/user/${user?.id}/workspace/${currWorkspaceName}/${workspaceId}/dashboard`} className="flex mb-8 items-center space-x-3 rtl:space-x-reverse">
+         <Link href={`/user/${user?.id}/workspace/${data?.workspaceName}/${workspaceId}/dashboard`} className="flex mb-8 items-center space-x-3 rtl:space-x-reverse">
       <ChevronLeft className="h-6 w-6" />
       Back
       </Link>
@@ -279,12 +282,12 @@ const expenseMutation = useMutation({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {user?.expenses?.map((expense) => (
+          {data?.expenses?.map((expense: Expense) => (
             <TableRow key={expense.id}>
               <TableCell className={`${expense.isDeleted ? ' line-through opacity-[0.5]' : ''}`}>{new Date(expense.date).toDateString()}</TableCell>
               <TableCell className={`${expense.isDeleted ? ' line-through opacity-[0.5]' : ''}`}>{expense.expenseName}</TableCell>
               <TableCell className={`${expense.isDeleted ? ' line-through opacity-[0.5]' : ''}`}>{expense.category}</TableCell>
-              <TableCell className={`${expense.isDeleted ? ' line-through opacity-[0.5]' : ''}`}>${expense.amount.toFixed(2)}</TableCell>
+              <TableCell className={`${expense.isDeleted ? ' line-through opacity-[0.5]' : ''}`}>${workspaceCurrency + " " + expense.amount.toFixed(2)}</TableCell>
               <TableCell>
               {expense.isDeleted ? <p className=" text-red-500 font-bold">Deleted</p> :  <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -392,7 +395,6 @@ const expenseMutation = useMutation({
     <div className="mt-1">
     <Label htmlFor="category">Category</Label>
       <Select value={category} onValueChange={(value) => {
-        console.log("Selected category:", value);
         setCategory(value)
         }}>
       <SelectTrigger>
