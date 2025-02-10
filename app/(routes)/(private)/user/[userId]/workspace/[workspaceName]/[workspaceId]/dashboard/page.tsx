@@ -84,7 +84,6 @@ const Page = () => {
     } = useQuery(
       {queryKey: ['workspace', workspaceId, {type: "done"}], queryFn: getWorkspace});
 
-      console.log(currentWorkSpace, "current")
 
       // check if the currentworkspace has income deposits
       const hasIncome = currentWorkSpace?.income?.length > 0;
