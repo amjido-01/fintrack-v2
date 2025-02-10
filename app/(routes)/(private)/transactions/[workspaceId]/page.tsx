@@ -138,25 +138,10 @@ const Page = () => {
   };
 
 
-
-  // Edit income handler 
-   // edit function
-   const editIncome = async (id: string, updatedIncome: Income): Promise<void> => {
-    try {
-      await axios.put(`/api/income/${id}`, updatedIncome);
-      queryClient.invalidateQueries({
-        queryKey:['workspace', workspaceId, {type: "done"}]
-      })
-      // refetchCurrentWorkspace();
-    } catch (error) {
-      console.error("Error editing income:", error);
-    }
-  }
-
   // Mutation handler for editing income
   const mutation = useMutation({
     mutationFn: ({ id, updatedIncome }: { id: string; updatedIncome: Partial<Income> }) => 
-      axios.put(`/api/income/${id}`, updatedIncome),
+      api.put(`/edit-income/${id}`, updatedIncome),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ['workspace', workspaceId, { type: "done" }]
