@@ -59,6 +59,7 @@ import withAuth from "@/components/withAuth";
 import { useAuthStore } from "@/store/use-auth";
 import { Expense } from "@/types/types";
 import { useEffect } from "react";
+import { useMutation } from "@tanstack/react-query"
 
 const categories = ["Food", "Clothing", "Transportation", "Entertainment", "Medical", "Other"]
 
@@ -94,17 +95,16 @@ const ExpensesPage = () => {
   const currWorkspaceName = user?.workspaces?.find(ws => ws.id === workspaceId)?.workspaceName
 
     // Reset form when closing edit dialog
-    // useEffect(() => {
-    //   if (!isEditFormOpen) {
-    //     setIncomeSource('');
-    //     setAmount(undefined);
-    //     setCategory(categories[0]);
-    //     setDate('');
-    //     setDescription('');
-    //     setSelectedIncome(null);
-    //     setSelectedTransactionId(null);
-    //   }
-    // }, [isEditFormOpen]);
+    useEffect(() => {
+      if (!isEditFormOpen) {
+        setExpenseName('');
+        setAmount("");
+        setCategory(categories[0]);
+        setDate('');
+        setNote('');
+        setSelectedExpenseId(null);
+      }
+    }, [isEditFormOpen]);
 
 
       const { data, isLoading, error, refetch: refetchCurrentWorkspace } = useQuery<
@@ -141,18 +141,82 @@ const ExpensesPage = () => {
     }
   };
 
-//  const editExpense = async (id: string, updatedExpense: Expense) => {
-//   try {
-//     await api.put(`/api/expense/${id}`, updatedExpense);
-//     queryClient.invalidateQueries({
-//       queryKey:['workspace', workspaceId, {type: "done"}]
-//     })
-//   } catch (error) {
-//     console.log("Error editing expense:", error);
-//   }
-//  }
+  // Mutation handler for editing expenses
+const expenseMutation = useMutation({
+  mutationFn: ({ id, updatedExpense }: { id: string; updatedExpense: Partial<Expense> }) =>
+    api.put(`/edit-expense/${id}`, updatedExpense),
+  onSuccess: () => {
+    queryClient.invalidateQueries({
+      queryKey: ["workspace", workspaceId, { type: "done" }],
+    });
+    toast({
+      title: "Expense updated",
+      description: "Your expense has been updated successfully.",
+    });
+  },
+  onError: (error: Error) => {
+    console.error("Error editing expense:", error);
+    toast({
+      title: "Error",
+      description: `An error occurred while updating expense: ${error.message}`,
+      variant: "destructive",
+    });
+  },
+});
 
 
+  const selectedExpense = user?.expenses?.find(e => e.id === selectedExpenseId);
+
+  const handleEditSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+  
+    if (!selectedExpenseId || !selectedExpense) {
+      toast({
+        title: "Error",
+        description: "No expense selected for update.",
+        variant: "destructive",
+      });
+      return;
+    }
+  
+    setLoading(true);
+  
+    const updatedExpense = {
+      expenseName: expenseName || selectedExpense.expenseName,
+      amount: amount ? parseFloat(amount) : selectedExpense.amount, // Ensure amount is a number
+      category: category || selectedExpense.category,
+      date: date || selectedExpense.date,
+      note: note || selectedExpense.note,
+    };
+  
+    expenseMutation.mutate(
+      { id: selectedExpenseId, updatedExpense },
+      {
+        onSuccess: (data) => {
+          console.log("Update successful:", data);
+          setIsEditFormOpen(false);
+          toast({
+            title: "Success",
+            description: "Expense has been successfully updated.",
+          });
+          refetchCurrentWorkspace();
+        },
+        onError: (error: any) => {
+          console.error("Update failed:", error);
+          toast({
+            title: "Error",
+            description: `Failed to update expense: ${error.message}`,
+            variant: "destructive",
+          });
+        },
+        onSettled: () => {
+          setLoading(false);
+        },
+      }
+    );
+  };
+  
+  
 
 
 
@@ -161,10 +225,17 @@ const ExpensesPage = () => {
   setIsDeleteDialogOpen(true);
   };
 
-  const handleEditPopover = (id: string) => {
-    setSelectedExpenseId(id);
+
+  const handleEditPopover = (expense: Expense) => {
+    setSelectedExpenseId(expense.id);
+    setExpenseName(expense.expenseName);
+    setAmount(expense.amount.toString()); // Ensure it's a string for input
+    setCategory(expense.category);
+    setDate(expense.date.split('T')[0]); // Extract date properly
+    setNote(expense.note);
     setIsEditDialogOpen(true);
   };
+  
   
   const handleDeleteConfirmation = async () => {
     if (selectedExpenseId) {
@@ -179,9 +250,6 @@ const ExpensesPage = () => {
   const handleEditConfirmation = () => {
     setIsEditDialogOpen(false)
     setIsEditFormOpen(true);
-  }
-
-  const handleEditSave = () => {
   }
 
 
@@ -228,7 +296,7 @@ const ExpensesPage = () => {
                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuGroup>
-                      <DropdownMenuItem onClick={() =>  handleEditPopover(expense.id)}>
+                      <DropdownMenuItem onClick={() =>  handleEditPopover(expense)}>
                         <Edit2Icon className="mr-2 h-4 w-4" />
                         <span>Edit</span>
                         <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
@@ -296,7 +364,7 @@ const ExpensesPage = () => {
           <DialogHeader>
             <DialogTitle>Edit Transaction</DialogTitle>
           </DialogHeader>
-          <form  className="space-y-4">
+          <form onSubmit={handleEditSave} className="space-y-4">
     <div>
       <Label htmlFor="name">Expense Name</Label>
       <Input

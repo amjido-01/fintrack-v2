@@ -216,7 +216,6 @@ const Page = () => {
           description: description || selectedIncome.description,
         };
       
-        console.log("Updating income:", updatedIncome);
       
         mutation.mutate(
           { id: selectedTransactionId, updatedIncome },
