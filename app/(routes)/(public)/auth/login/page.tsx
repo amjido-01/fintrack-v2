@@ -51,7 +51,6 @@ const Page = () => {
             return;
           }
       
-          // Use GET instead of POST if appropriate
           const hasWorkSpace = await api.get(`/check-workspace/${userId}`);
           const profileData = hasWorkSpace.data;
       

@@ -86,7 +86,7 @@ const ExpensesPage = () => {
 
 
   const getWorkspace = async () => {
-    const res = await api.get(`/get-workspace/${workspaceId}`);
+    const res = await api.get(`/workspaces/${workspaceId}`);
     return res.data.responseBody;
   }
 

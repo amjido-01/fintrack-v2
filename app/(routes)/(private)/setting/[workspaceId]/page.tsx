@@ -79,7 +79,7 @@ const Page = () => {
   }, [currentWorkSpace])
 
   const updateWorkspace = async (data: Partial<Workspace>): Promise<Workspace> => {
-    const res = await api.put(`/update-workspace/${workspaceId}`, data)
+    const res = await api.put(`/workspaces/${workspaceId}`, data)
     console.log(res.data, " from update")
     return res.data
   }

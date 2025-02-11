@@ -101,11 +101,9 @@ export const useAuthStore = create(
         try {
           const response = await api.post("/auth/login", { email, password });
           const { accessToken, refreshToken, responseBody } = response.data;
-          console.log(response.data, "refresh token......");
 
           set({ accessToken, user: responseBody});
           api.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
-          console.log(accessToken, responseBody, ".....")
           
           return responseBody;
         } catch (error) {

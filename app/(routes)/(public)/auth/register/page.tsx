@@ -10,7 +10,6 @@ import Image from 'next/image';
 import { Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/store/use-auth';
-// import { signIn } from 'next-auth/react';
 import Popover from '@/components/Popover';
 
 const Page = () => {
@@ -133,8 +132,9 @@ const Page = () => {
         </div>
 
         <form onSubmit={registerUser}>
-        <div className="mt-4 flex flex-col md:flex-row md:justify-between">
+        <div className="mt-4">
             {error && <p className="text-red-500 text-sm">{error}</p>}
+            <div className='flex flex-col md:flex-row md:justify-between'>
             <div className='md:w-[48%]'>
             <Label className='block mb-2 text-sm font-medium' htmlFor="name">Name</Label>
             <Input 
@@ -158,6 +158,7 @@ const Page = () => {
              placeholder="johndoe88"
              required
             className='block w-full px-4 py-2' />
+            </div>
             </div>
         </div>
         <div className="mt-4">

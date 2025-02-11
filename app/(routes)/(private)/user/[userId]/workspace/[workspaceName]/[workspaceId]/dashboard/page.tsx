@@ -65,13 +65,13 @@ const Page = () => {
     const {user} = useAuthStore()
     
     const getWorkspaces = async () => {
-      const res = await api.get(`/workspace`);
+      const res = await api.get(`/workspaces`);
       return res.data?.responseBody?.hasWorkSpace;
     }
 
 
     const getWorkspace = async () => {
-      const res = await api.get(`/get-workspace/${workspaceId}`);
+      const res = await api.get(`/workspaces/${workspaceId}`);
       return res.data.responseBody;
     }
   

@@ -39,7 +39,7 @@ export default function DeleteWorkspace({workspaceId, userWorkspace}: DeleteWork
     setIsDeleting(true)
     
     try {
-      await api.delete(`/delete-workspace/${workspaceId}`)
+      await api.delete(`/workspaces/${workspaceId}`)
 
       if (user) {
         const updatedWorkspaces = user.workspaces.filter(ws => ws.id !== workspaceId);

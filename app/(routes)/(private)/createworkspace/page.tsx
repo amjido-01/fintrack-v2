@@ -76,7 +76,7 @@ const Page = () => {
 
 
         try {
-          const response = await api.post('/create-workspace', {
+          const response = await api.post('/workspaces', {
             workspaceName,
             currency,
             description
