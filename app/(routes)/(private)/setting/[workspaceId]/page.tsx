@@ -73,6 +73,7 @@ const Page = () => {
 
   useEffect(() => {
     if (currentWorkSpace) {
+      console.log("hello from testing...")
       setWorkspaceName(currentWorkSpace.workspaceName)
       setCurrency(currentWorkSpace.currency)
     }

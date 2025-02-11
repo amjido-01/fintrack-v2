@@ -52,6 +52,7 @@ const Page = () => {
           }
       
           const hasWorkSpace = await api.get(`/check-workspace/${userId}`);
+          console.log(hasWorkSpace, "from login page")
           const profileData = hasWorkSpace.data;
       
           if (profileData.hasWorkspace) {
