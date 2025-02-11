@@ -20,9 +20,9 @@ const Header = () => {
                 <svg width="200" height="50" viewBox="0 0 200 50" xmlns="http://www.w3.org/2000/svg">
 
                 <circle cx="25" cy="25" r="10" fill="green" stroke="white" strokeWidth="2"/>
-                <text x="21" y="29" font-family="Arial" font-size="12" fill="white" font-weight="bold">$</text>
+                <text x="21" y="29" fontFamily="Arial" fontSize="12" fill="white" fontWeight="bold">$</text>
 
-                <text x="45" y="32" font-family="Arial" font-size="18" fill="white" font-weight="bold">FinTrack</text>
+                <text x="45" y="32" fontFamily="Arial" fontSize="18" fill="white" fontWeight="bold">FinTrack</text>
                 </svg>
 
                 
