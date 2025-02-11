@@ -140,7 +140,7 @@ const Page = () => {
   // Mutation handler for editing income
   const mutation = useMutation({
     mutationFn: ({ id, updatedIncome }: { id: string; updatedIncome: Partial<Income> }) => 
-      api.put(`/edit-income/${id}`, updatedIncome),
+      api.put(`/incomes/${id}`, updatedIncome),
     
     onSuccess: () => {
      queryClient.invalidateQueries({
