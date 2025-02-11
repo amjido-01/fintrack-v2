@@ -61,7 +61,7 @@ const ExpensesDialog: React.FC<Expense> = ({userId, workspaceId}) => {
     }
 
     try {
-      const response = await api.post("/create-expense", {
+      const response = await api.post("/expenses", {
         expenseName,
         date,
         amount,

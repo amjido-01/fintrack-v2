@@ -120,7 +120,7 @@ const ExpensesPage = () => {
     // delete expense
     const deleteExpense = async (id: string) => {
       try {
-        await api.delete(`/delete-expense/${id}`);
+        await api.delete(`/expenses/${id}`);
         refetchCurrentWorkspace()
         queryClient.invalidateQueries({
           queryKey:['workspace', workspaceId, {type: "done"}]
@@ -144,7 +144,7 @@ const ExpensesPage = () => {
       // Mutation handler for editing expenses
 const expenseMutation = useMutation({
   mutationFn: ({ id, updatedExpense }: { id: string; updatedExpense: Partial<Expense> }) =>
-    api.put(`/edit-expense/${id}`, updatedExpense),
+    api.put(`/expenses/${id}`, updatedExpense),
 
   onSuccess: () => {
     queryClient.invalidateQueries({
