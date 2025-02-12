@@ -22,13 +22,13 @@ import {
     SelectValue, } from './ui/select';
 import { useQueryClient } from '@tanstack/react-query';
 import api from '@/app/api/axiosConfig';
-    interface Expense {
-      userId: string;
-      workspaceId: string | string[];
-    }
+  interface Expense {
+    userId: string;
+    workspaceId: string | string[];
+  }
 
 
-    const categories = ["Food", "Clothing", "Transportation", "Entertainment", "Medical", "Other"]
+const categories = ["Food", "Clothing", "Transportation", "Entertainment", "Medical", "Other"]
 
 const ExpensesDialog: React.FC<Expense> = ({userId, workspaceId}) => {
     const queryClient = useQueryClient();
